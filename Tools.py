@@ -27,27 +27,9 @@ class GlobalVariables():
         self.stdBatchPath = conf['stdBatchPath']
 
 
-# Get the batches from the disk and see if the plots looks good
-# This just Generated batches one after another to the calling mechanism
-def batch_file_iterator(batch_dir, batch_filename_arr):
-    for no, batch_file in enumerate(batch_filename_arr):
-        with open(os.path.join(batch_dir,batch_file), 'rb') as f:
-            data = pickle.load(f)
-            trnBatchData = data['batchData']
-            trnBatchLabels = data['batchLabels']
-        yield trnBatchData, trnBatchLabels
 
 
-def reshape_data(dataset, labels, num_features, num_labels, sample_size=None):
-    if sample_size:
-        dataset = dataset[:sample_size].reshape(sample_size, num_features) # To reshape the  
-        # Map 0 to [1.0, 0.0, 0.0 ...], 1 to [0.0, 1.0, 0.0 ...]
-        labels = (np.arange(num_labels) == labels[:,None]).astype(np.float32)
-    else:
-        dataset = dataset.reshape(len(dataset), num_features) # To reshape the  
-        # Map 0 to [1.0, 0.0, 0.0 ...], 1 to [0.0, 1.0, 0.0 ...]
-        labels = (np.arange(num_labels) == labels[:,None]).astype(np.float32)
-    return dataset, labels
+
 
 
 def accuracy(prediction, labels, labels_one_hot = None):

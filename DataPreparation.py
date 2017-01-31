@@ -1,3 +1,12 @@
+"""
+About me: This module will go through all the folders representing each labels of the CIFAR10 dataset, slice and dice the data and create batches (10 batches), where batches are subset of data.
+
+	1. All the batches have equal proportion of labels:
+		For example batch 1 of size 5000 contains 500 dataset pertaining to label CAR, 500 dataset pertaining to cat and so on.
+
+"""
+
+
 from __future__ import print_function
 import os, sys, glob
 import numpy as np

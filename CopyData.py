@@ -1,3 +1,8 @@
+"""
+About Me: The Input unzipped folder for CIFAR10 has the images of all the labels together. This module just segregates them and puts them into seperate folder. So ultimately the output of this module will be 10 folders each representing one label of the CIFAR10 data set.
+"""
+
+
 import os, sys, glob
 import numpy as np
 import pandas as pd
