@@ -8,58 +8,10 @@ import pickle
 from IPython.display import display, Image
 from scipy import ndimage
 
+from FeatureExtraction import feature_pixelSTD
 
-parent_dir = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/'
+from Tools import GlobalVariables
 
-bird_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataBird/'
-dog_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataDog/'
-cat_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataCat/'
-horse_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataHorse/'
-deer_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataDeer/'
-frog_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataFrog/'
-truck_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataTruck/'
-airplane_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataAirplane/'
-ship_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataShip/'
-auto_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataAuto/'
-
-dataPaths = [bird_datapath,dog_datapath,cat_datapath,horse_datapath,deer_datapath,
-frog_datapath,truck_datapath,airplane_datapath,ship_datapath,auto_datapath]
-
-
-def image_standarize(image_pxlvals):
-    return(image_pxlvals - 255.0/2)/255.0
-
-def feature_pixelSTD(parent_path,file_names_arr,image_size=32, min_num_image=None):
-	dataset = np.ndarray(shape=(len(file_names_arr), 
-                                image_size, 
-                                image_size
-                               ),
-                         dtype=np.float32)
-	print (dataset.shape)
-	for num_images, image in enumerate(file_names_arr):
-		image_file_dir = os.path.join(parent_path, image)
-
-		try:
-			image_orig = cv2.imread(image_file_dir)
-			image_gray = cv2.cvtColor(image_orig, cv2.COLOR_BGR2GRAY)
-			# print (image_gray.shape)
-			# image_pixels = ndimage.imread(image_file_dir).astype(float)
-
-			image_standarized = image_standarize(image_gray)
-			# print (image_standarized.shape)
-			if image_standarized.shape != (image_size, image_size):
-				raise Exception('Unexpected image shape: %s' % str(image_standarized.shape))
-
-			dataset[num_images, :, :] = image_standarized
-
-		except IOError as e:
-			print('Could not read:', image, ':', e, '- hence skipping.')
-
-	# dataset = dataset[0:num_images+1, :, :]  # Will combine all the image pixels for 1 type Example All the 'a'
-	print('Complete Training/Crossvalidation dataset :', dataset.shape)
-	print('Mean:', np.mean(dataset))
-	print('Standard deviation:', np.std(dataset))
-	return dataset
          
     
 def create_dataset(dataPath, featureType, max_num_images=None,force_dump=None):
@@ -73,7 +25,7 @@ def create_dataset(dataPath, featureType, max_num_images=None,force_dump=None):
 
 		# Store the image as a pickle file in the directory
 		pickle_filename = os.path.basename(os.path.abspath(images_path))
-		path_to_folder = parent_dir+'/'+featureType
+		path_to_folder = conf['parent_dir']+'/'+featureType
 
 		if not os.path.exists(path_to_folder):
 			os.makedirs(path_to_folder)
@@ -90,6 +42,7 @@ def create_dataset(dataPath, featureType, max_num_images=None,force_dump=None):
 				print('Unable to save data to', pickle_image_dirpickle_image_dir, ':', e)
 
 
+
 class BuildDataset():
 
 	def __init__(self):
@@ -101,9 +54,11 @@ class BuildDataset():
 		return dataset, labels
 
 	# You should provide the max_num_image. And the num_of_images per class label should not exceed it.
-	def train_test(self, numBatches, max_num_images, featureType, test_percntg=20):
-		root_dir = parent_dir+featureType
-		label_categories = os.listdir(root_dir)
+	# The below code created a big Training set with all the 
+	def train_test(self, numBatches, max_num_images, featureType, test_percntg=10):
+		root_dir = conf['parent_dir']+featureType
+		label_categories = [files for files in os.listdir(root_dir) if files.endswith(".pickle")]
+		# print (label_categories)
 
 		if not os.path.exists(root_dir):
 			print ('The path %s doesnt exists ', root_dir)
@@ -148,31 +103,39 @@ class BuildDataset():
 			except Exception as e:
 				print('Unable to process data from', pickle_files, ':', e)
 				raise
+
+		print ('The training Data set size is : ', self.trainDataset.shape)
+		print ('The training Labels size is : ', self.trainLabels.shape)
+		print ('The test Data set size is : ', self.testDataset.shape)
+		print ('The test Labels size is : ', self.testLabels.shape)
 		# return 	label_dict, trainDataset, testDataset, trainLabels, testLabels
 
 
 	def generate_batches(self, indices_arrays):
+		# The below code woll just provide the initiator function with the training dataset and labels for the input index values.
 		for indices in indices_arrays:
 			yield self.trainDataset[indices], self.trainLabels[indices]  # , 
 
 
-
-
-def dumpBatches(featureType, create_pickle_file='N', create_train_test_valid='N'):
+def dumpBatches(featureType, create_pickle_file='N', create_train_test_valid='N', test_percntg=0):
 	if create_pickle_file == 'Y':
-		create_dataset(dataPaths, featureType=featureType, force_dump='y')
+		objGV = GlobalVariables()
+		create_dataset(objGV.dataPaths, featureType=featureType, force_dump='y')
 
 	if create_train_test_valid == 'Y':
-		batchPath = parent_dir+featureType+'/batchPath/'
+		batchPath = conf['parent_dir']+featureType+'/batchPath/'
 		numBatches = 10
 		obj = BuildDataset()
-		obj.train_test(numBatches=10, max_num_images=5000, featureType=featureType)
+		obj.train_test(numBatches=10, max_num_images=5000, featureType=featureType, test_percntg=test_percntg)
+		
 		if (len(np.unique(obj.trainLabels))%numBatches == 0): 
-
+			# The below three lines of code will just create a dummy array and jumble the indices so we get equal mumber of labels in all the batches.
 			dummy_arr = np.arange(len(obj.trainLabels))
+			# print (dummy_arr)
 			nwshape = (numBatches, int(len(dummy_arr)/numBatches))
-
 			batch_indices = np.reshape(np.reshape(dummy_arr, nwshape).T, nwshape)
+			# print (list(batch_indices[0]))
+
 			for no, (trnBatchData, trnBatchLabel) in enumerate(obj.generate_batches(batch_indices)):
 				print (trnBatchData.shape, trnBatchLabel.shape)
 				
@@ -189,15 +152,6 @@ def dumpBatches(featureType, create_pickle_file='N', create_train_test_valid='N'
 			print ('For equal distribution please provide a numBatches that multiple of the number of Class %d'%len(np.unique(trainLabels)))
 
 
-# Get the batches from the disk and see if the plots looks good
-# This just Generated batches one after another to the calling mechanism
-def batch_file_iterator(batch_dir, batch_filename_arr):
-    for no, batch_file in enumerate(batch_filename_arr):
-        with open(os.path.join(batch_dir,batch_file), 'rb') as f:
-            data = pickle.load(f)
-            trnBatchData = data['batchData']
-            trnBatchLabels = data['batchLabels']
-        yield trnBatchData, trnBatchLabels
 
-
+# dumpBatches(featureType='featureSTD', create_pickle_file='N', create_train_test_valid='Y', test_percntg=0)
 
