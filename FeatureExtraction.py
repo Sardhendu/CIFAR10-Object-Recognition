@@ -1,14 +1,14 @@
-from __future__ import print_function
-import os, sys, glob
-import numpy as np
-import pandas as pd
+
 """
 	About me: This module contain different feature extraction techniques
 				This modele is called by the DataPreparation modele whilw creating batches
 
 """
 
-
+from __future__ import print_function
+import os, sys, glob
+import numpy as np
+import pandas as pd
 import cv2
 import pickle
 from IPython.display import display, Image

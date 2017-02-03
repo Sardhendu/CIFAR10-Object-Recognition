@@ -47,7 +47,7 @@ def genTrainValidFolds():
 		start = 0
 		for no,j in enumerate(np.arange(foldSize)):
 			if j!=i:
-				print ('Running j is : ', j)
+				# print ('Running j is : ', j)
 				trn_d, trn_l = readFiles(stdBatchPath+batches[j])  
 				trainData[start:start+trn_d.shape[0]], trainLabels[start:start+trn_l.shape[0]] = \
 						reshape_data(dataset=trn_d, 
