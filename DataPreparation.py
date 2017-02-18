@@ -1,5 +1,7 @@
 """
-About me: This module will go through all the folders representing each labels of the CIFAR10 dataset, slice and dice the data and create batches (10 batches), where batches are subset of data.
+Author: Sardhendu Mishra
+
+Code Info: This module will go through all the folders representing each labels of the CIFAR10 dataset, slice and dice the data and create batches (10 batches), where batches are subset of data.
 
 	1. All the batches have equally distributed  labels:
 		For example batch 1 of size 5000 contains 500 dataset pertaining to label CAR, 500 dataset pertaining to cat and so on so forth.
@@ -10,16 +12,11 @@ About me: This module will go through all the folders representing each labels o
 from __future__ import print_function
 import os, sys, glob
 import numpy as np
-import pandas as pd
 
 import cv2
 import pickle
-from IPython.display import display, Image
-from scipy import ndimage
 
 from FeatureExtraction import feature_pixelSTD
-
-from Tools import GlobalVariables
 
          
     
@@ -52,37 +49,41 @@ def create_dataset(dataPath, featureType, max_num_images=None,force_dump=None):
 
 
 
-class BuildDataset():
+class CreateBatches():
 
-	def __init__(self):
-		self.imageSize = 32
+	def __init__(self, dimensions):
+		self.dimensions = dimensions
+		# label_dict : keys are the object name and values are the labels assigned
 
 	def initialize_arrays(self, num_images):
-		dataset = np.ndarray((num_images, self.imageSize, self.imageSize), dtype=np.float32)
+		dataset = np.ndarray((num_images, self.dimensions), dtype=np.float32)
 		labels = np.ndarray(num_images, dtype=np.int32)
 		return dataset, labels
 
 	# You should provide the max_num_image. And the num_of_images per class label should not exceed it.
 	# The below code created a big Training set with all the 
-	def train_test(self, numBatches, max_num_images, featureType, test_percntg=10):
-		root_dir = conf['parent_dir']+featureType
-		label_categories = [files for files in os.listdir(root_dir) if files.endswith(".pickle")]
+	def gen_TrainTestData(self, max_num_images, dir_to_pickle_files, test_percntg=10):
+		
+		label_categories = [files for files in os.listdir(dir_to_pickle_files) if files.endswith(".pickle")]
 		# print (label_categories)
 
-		if not os.path.exists(root_dir):
-			print ('The path %s doesnt exists ', root_dir)
+		if not os.path.exists(dir_to_pickle_files):
+			print ('The path %s doesnt exists ', dir_to_pickle_files)
 			# break
 
 		test_size_per_class = int(test_percntg/100 * max_num_images)
 		train_size_per_class = int(max_num_images - test_size_per_class)
 		# print (train_size_per_class, test_size_per_class)
 
-		num_test_datapoints = int(np.ceil(test_size_per_class * len(label_categories)))
-		num_train_datapoints = int(train_size_per_class * len(label_categories))
-		
-		self.testDataset, self.testLabels = self.initialize_arrays(num_test_datapoints)
-		self.trainDataset, self.trainLabels = self.initialize_arrays(num_train_datapoints)
+		# Get the num of train datapoint and num of test data points
+		numTestPoints = int(np.ceil(test_size_per_class * len(label_categories)))
+		numTrainPoints = int(train_size_per_class * len(label_categories))
 
+		# print (numTestPoints)
+		# print (numTrainPoints)
+		
+		testDataset, testLabels = self.initialize_arrays(numTestPoints)
+		trainDataset, trainLabels = self.initialize_arrays(numTrainPoints)
 		# print (testDataset.shape, testLabels.shape)
 		# print (trainDataset.shape, trainLabels.shape)
 
@@ -90,20 +91,20 @@ class BuildDataset():
 		end_trn, end_tst  = train_size_per_class, test_size_per_class
 		end = train_size_per_class + test_size_per_class
 
-		self.label_dict = {}
+		label_dict = {}
 		for label_id, label_file in enumerate(label_categories):
 			# print (start_trn ,start_tst, end_trn, end_tst)
-			self.label_dict[label_id] = label_file
+			label_dict[label_id] = label_file
 			try:
-				with open (os.path.join(root_dir,label_file), 'rb') as f:
+				with open (os.path.join(dir_to_pickle_files,label_file), 'rb') as f:
 					dataMatrix = pickle.load(f)
 					# print (dataMatrix.shape)
 
 					np.random.shuffle(dataMatrix)
-					self.testDataset[start_tst:end_tst,:,:] = dataMatrix[0:test_size_per_class,:,:]
-					self.trainDataset[start_trn:end_trn,:,:] = dataMatrix[test_size_per_class:end,:,:]
-					self.testLabels[start_tst:end_tst] = label_id
-					self.trainLabels[start_trn:end_trn] = label_id
+					testDataset[start_tst:end_tst,:] = dataMatrix[0:test_size_per_class,:]
+					trainDataset[start_trn:end_trn,:] = dataMatrix[test_size_per_class:end,:]
+					testLabels[start_tst:end_tst] = label_id
+					trainLabels[start_trn:end_trn] = label_id
 
 					start_tst += test_size_per_class
 					end_tst += test_size_per_class
@@ -113,54 +114,54 @@ class BuildDataset():
 				print('Unable to process data from', pickle_files, ':', e)
 				raise
 
-		print ('The training Data set size is : ', self.trainDataset.shape)
-		print ('The training Labels size is : ', self.trainLabels.shape)
-		print ('The test Data set size is : ', self.testDataset.shape)
-		print ('The test Labels size is : ', self.testLabels.shape)
-		# return 	label_dict, trainDataset, testDataset, trainLabels, testLabels
-
-
-	def generate_batches(self, indices_arrays):
-		# The below code woll just provide the initiator function with the training dataset and labels for the input index values.
-		for indices in indices_arrays:
-			yield self.trainDataset[indices], self.trainLabels[indices]  # , 
-
-
-def dumpBatches(featureType, create_pickle_file='N', create_train_test_valid='N', test_percntg=0):
-	if create_pickle_file == 'Y':
-		objGV = GlobalVariables()
-		create_dataset(objGV.dataPaths, featureType=featureType, force_dump='y')
-
-	if create_train_test_valid == 'Y':
-		batchPath = conf['parent_dir']+featureType+'/batchPath/'
-		numBatches = 10
-		obj = BuildDataset()
-		obj.train_test(numBatches=10, max_num_images=5000, featureType=featureType, test_percntg=test_percntg)
+		print ('The training Data set size is : ', trainDataset.shape)
+		print ('The training Labels size is : ', trainLabels.shape)
+		print ('The test Data set size is : ', testDataset.shape)
+		print ('The test Labels size is : ', testLabels.shape)
 		
-		if (len(np.unique(obj.trainLabels))%numBatches == 0): 
-			# The below three lines of code will just create a dummy array and jumble the indices so we get equal mumber of labels in all the batches.
-			dummy_arr = np.arange(len(obj.trainLabels))
-			# print (dummy_arr)
-			nwshape = (numBatches, int(len(dummy_arr)/numBatches))
-			batch_indices = np.reshape(np.reshape(dummy_arr, nwshape).T, nwshape)
-			# print (list(batch_indices[0]))
+		return 	trainDataset, trainLabels, testDataset, testLabels, label_dict
 
-			for no, (trnBatchData, trnBatchLabel) in enumerate(obj.generate_batches(batch_indices)):
-				print (trnBatchData.shape, trnBatchLabel.shape)
+
+	def generateBatches(self, dataset, labels, numBatches=10):
+		# The below three lines of code will just create a dummy array and jumble the indices so we get equal mumber of labels in all the batches.
+		dummy_arr = np.arange(len(dataset))
+		nwshape = (numBatches, int(len(dummy_arr)/numBatches))
+		batch_indices = np.reshape(np.reshape(dummy_arr, nwshape).T, nwshape)
+
+		# The below code will just provide the initiator function with the training dataset and labels for the input index values.
+		for indices in batch_indices:
+			yield dataset[indices], labels[indices]
+
+
+	def dumpBatches(self, trnBatchData, trnBatchLabel, whereToDump, batchNum):
+		print ('Batch No: ', batchNum, ' : Training Batch Data Shape:', trnBatchData.shape)
+		print ('Batch No: ', batchNum, ' : Training Batch Labels Shape :', trnBatchLabel.shape)
 				
-				if not os.path.exists(batchPath):
-					os.makedirs(batchPath)
+		if not os.path.exists(whereToDump):
+			os.makedirs(whereToDump)
 
-				with open(batchPath+'batch'+str(no)+'.pickle', 'wb') as f:
-					batch = {
-							'batchData': trnBatchData,
-							'batchLabels': trnBatchLabel
-							}
-					pickle.dump(batch, f, pickle.HIGHEST_PROTOCOL)
-		else:
-			print ('For equal distribution please provide a numBatches that multiple of the number of Class %d'%len(np.unique(trainLabels)))
-
+		with open(whereToDump+'/'+str(batchNum)+'.pickle', 'wb') as f:
+			batch = {
+					'batchData': trnBatchData,
+					'batchLabels': trnBatchLabel
+					}
+			pickle.dump(batch, f, pickle.HIGHEST_PROTOCOL)
+		
 
 
-# dumpBatches(featureType='featureSTD', create_pickle_file='N', create_train_test_valid='Y', test_percntg=0)
+# imageDim = 32*32*3
+# root_dir = "/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/Classification-1/STD/"
+# batch_dir = "/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/Classification-1/STD/batchData/"
+# obj_STD = CreateBatches(dimensions=imageDim)
+# trainData, trainLabels, testLabels, _, _ = obj_STD.gen_TrainTestData(max_num_images=5000, dir_to_pickle_files=root_dir, test_percntg=0)
+# for batchNum, (trnBatchData, trnBatchLabel) in enumerate(obj_STD.generateBatches(dataset=trainData, labels=trainLabels, numBatches=10)):
+# 	obj_STD.dumpBatches(batch_dir, batchNum=batchNum)
 
+
+# imageDim=32*32
+# root_dir = "/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/Classification-1/EDG/"
+# batch_dir = "/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/Classification-1/EDG/batchData/"
+# obj_EDG = CreateBatches(dimensions=imageDim)
+# trainData, trainLabels, testLabels, _, _ = obj_EDG.gen_TrainTestData(max_num_images=5000, dir_to_pickle_files=root_dir, test_percntg=0)
+# for batchNum, (trnBatchData, trnBatchLabel) in enumerate(obj_EDG.generateBatches(dataset=trainData, labels=trainLabels, numBatches=10)):
+# 	obj_EDG.dumpBatches(batch_dir, batchNum=batchNum)

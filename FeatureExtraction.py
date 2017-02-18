@@ -1,7 +1,9 @@
 
 """
-	About me: This module contain different feature extraction techniques
-				This modele is called by the DataPreparation modele whilw creating batches
+Author: Sardhendu Mishra
+
+About me: This module contain different feature extraction techniques
+		This modele is called by the DataPreparation modele whilw creating batches
 
 """
 

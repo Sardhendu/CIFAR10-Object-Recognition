@@ -1,3 +1,10 @@
+"""
+Author: Sardhendu Mishra
+
+Code Info: Central to this module is "genTrainValidFolds". This function generates batch data of n foldes and provide the caller function will n-1 fold for training and the nth fold for validation.
+
+"""
+
 
 import os, sys,glob
 import numpy as np
@@ -5,7 +12,7 @@ import pickle
 
 # from Tools import GlobalVariables
 
-stdBatchPath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/featureSTD/batchPath/'
+# stdBatchPath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/featureSTD/batchPath/'
 
 def readFiles(dirIN):
     with open(dirIN, 'rb') as f:
@@ -28,18 +35,16 @@ def genBatchIterator(self,batch_dir, batch_filename_arr):
         trnBatchData, trnBatchLabels = readFiles(os.path.join(batch_dir,batch_file))
         yield trnBatchData, trnBatchLabels
 
-def genTrainValidFolds():
+def genTrainValidFolds(filePath, num_features, num_instances, num_labels = 10, foldSize=10):
 	# stdBatchPath  = GlobalVariables()
-	batches = np.array([files for files in os.listdir(stdBatchPath) if files.endswith('.pickle')])
+	batches = np.array([files for files in os.listdir(filePath) if files.endswith('.pickle')])
 	foldSize = len(batches)
 	for i in np.arange(foldSize): 
 		print ('Running i is :', i)
-		num_features = 32*32
-		num_labels = 10
-		trainData = np.ndarray(shape=(5000*(foldSize-1),num_features), dtype=np.float32)
-		trainLabels = np.ndarray(shape=(5000*(foldSize-1),num_labels), dtype=np.float32)
+		trainData = np.ndarray(shape=(num_instances*(foldSize-1),num_features), dtype=np.float32)
+		trainLabels = np.ndarray(shape=(num_instances*(foldSize-1),num_labels), dtype=np.float32)
 
-		validData, validLabels = readFiles(stdBatchPath+batches[i])
+		validData, validLabels = readFiles(filePath+batches[i])
 		validData, validLabels = reshape_data(dataset=validData, 
                                                labels=validLabels, 
                                                num_features=num_features, 
@@ -48,7 +53,7 @@ def genTrainValidFolds():
 		for no,j in enumerate(np.arange(foldSize)):
 			if j!=i:
 				# print ('Running j is : ', j)
-				trn_d, trn_l = readFiles(stdBatchPath+batches[j])  
+				trn_d, trn_l = readFiles(filePath+batches[j])  
 				trainData[start:start+trn_d.shape[0]], trainLabels[start:start+trn_l.shape[0]] = \
 						reshape_data(dataset=trn_d, 
 							labels=trn_l, 
