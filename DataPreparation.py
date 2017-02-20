@@ -15,10 +15,11 @@ import numpy as np
 
 import cv2
 import pickle
+import random
 
 from FeatureExtraction import feature_pixelSTD
-
-         
+# str()
+# 1234
     
 def create_dataset(dataPath, featureType, max_num_images=None,force_dump=None):
 	for no,images_path in enumerate(dataPath):
@@ -47,7 +48,7 @@ def create_dataset(dataPath, featureType, max_num_images=None,force_dump=None):
 			except Exception as e:
 				print('Unable to save data to', pickle_image_dirpickle_image_dir, ':', e)
 
-
+# for i in 
 
 class CreateBatches():
 
@@ -92,6 +93,8 @@ class CreateBatches():
 		end = train_size_per_class + test_size_per_class
 
 		label_dict = {}
+		seed = 448
+		random.seed(seed)
 		for label_id, label_file in enumerate(label_categories):
 			# print (start_trn ,start_tst, end_trn, end_tst)
 			label_dict[label_id] = label_file
