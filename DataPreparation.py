@@ -46,9 +46,9 @@ def create_dataset(dataPath, featureType, max_num_images=None,force_dump=None):
 				with open(pickle_image_dir, 'wb') as f:
 					pickle.dump(dataset, f, pickle.HIGHEST_PROTOCOL)
 			except Exception as e:
-				print('Unable to save data to', pickle_image_dirpickle_image_dir, ':', e)
+				print('Unable to save data to', pickle_image_dir, ':', e)
 
-# for i in 
+
 
 class CreateBatches():
 
@@ -92,12 +92,13 @@ class CreateBatches():
 		end_trn, end_tst  = train_size_per_class, test_size_per_class
 		end = train_size_per_class + test_size_per_class
 
-		label_dict = {}
+		labelDict = {}
 		seed = 448
 		random.seed(seed)
+		print ('seed use for randomness is : ', seed )
 		for label_id, label_file in enumerate(label_categories):
 			# print (start_trn ,start_tst, end_trn, end_tst)
-			label_dict[label_id] = label_file
+			labelDict[label_id] = label_file
 			try:
 				with open (os.path.join(dir_to_pickle_files,label_file), 'rb') as f:
 					dataMatrix = pickle.load(f)
@@ -122,7 +123,7 @@ class CreateBatches():
 		print ('The test Data set size is : ', testDataset.shape)
 		print ('The test Labels size is : ', testLabels.shape)
 		
-		return 	trainDataset, trainLabels, testDataset, testLabels, label_dict
+		return 	trainDataset, trainLabels, testDataset, testLabels, labelDict
 
 
 	def generateBatches(self, dataset, labels, numBatches=10):
@@ -136,7 +137,7 @@ class CreateBatches():
 			yield dataset[indices], labels[indices]
 
 
-	def dumpBatches(self, trnBatchData, trnBatchLabel, whereToDump, batchNum):
+	def dumpBatches(self, whereToDump, trnBatchData, trnBatchLabel, batchNum, labelDict=None,):
 		print ('Batch No: ', batchNum, ' : Training Batch Data Shape:', trnBatchData.shape)
 		print ('Batch No: ', batchNum, ' : Training Batch Labels Shape :', trnBatchLabel.shape)
 				
@@ -146,7 +147,8 @@ class CreateBatches():
 		with open(whereToDump+'/'+str(batchNum)+'.pickle', 'wb') as f:
 			batch = {
 					'batchData': trnBatchData,
-					'batchLabels': trnBatchLabel
+					'batchLabels': trnBatchLabel,
+					'labelDict': labelDict
 					}
 			pickle.dump(batch, f, pickle.HIGHEST_PROTOCOL)
 		
