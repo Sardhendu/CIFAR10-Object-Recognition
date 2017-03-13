@@ -68,7 +68,7 @@ def genTrainValidFolds(filePath, oneHot=False):
 	batches = np.array([files for files in os.listdir(filePath) if files.endswith('.pickle')])
 	foldSize = len(batches)
 	for i in np.arange(foldSize): 
-		print ('Running i is :', i)
+		# print ('Running i is :', i)
 		
 		validData, validLabels, labelDict = readFiles(filePath+batches[i])
 		numLabels = len(np.unique(validLabels))

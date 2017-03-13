@@ -93,7 +93,8 @@ class CreateBatches():
 		end = train_size_per_class + test_size_per_class
 
 		labelDict = {}
-		seed = 448
+		# seed = 448
+		seed = 8653
 		random.seed(seed)
 		print ('seed use for randomness is : ', seed )
 		for label_id, label_file in enumerate(label_categories):
