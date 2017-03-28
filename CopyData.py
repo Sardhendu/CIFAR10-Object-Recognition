@@ -1,62 +1,42 @@
 """
-About Me: The Input unzipped folder for CIFAR10 has the images of all the labels together. This module just segregates them and puts them into seperate folder. So ultimately the output of this module will be 10 folders each representing one label of the CIFAR10 data set.
+About Me: The Input unzipped folder for CIFAR10 has the images of all the labels together.
+This module just segregates them and puts them into seperate folder.
+So ultimately the output of this module will be folders with images each representing one label of the CIFAR10 data set.
 """
 
-
-import os, sys, glob
-import numpy as np
-import pandas as pd
+import os
+import csv
 import shutil
+from os import listdir
+from os.path import isfile, join
 
+if __name__=='__main__':
+    # directory containing images folder and labels file
+    # working_dir_path = os.path.dirname(__file__)
+    working_dir_path = 'E:/anil/IIT Sop/Term02/CSP571/Project/data/' # change this to where the images are stored
 
-if True:
-	from Tools import GlobalVariables
-	# print (conf["bird_datapath"])
-	obj_GV = GlobalVariables()
-	dataPath = obj_GV.dataPath
-	labelsPath = obj_GV.labelsPath
-	
-	bird_datapath = obj_GV.bird_datapath
-	dog_datapath = obj_GV.dog_datapath
-	cat_datapath = obj_GV.cat_datapath
-	horse_datapath = obj_GV.horse_datapath
-	deer_datapath = obj_GV.deer_datapath
-	frog_datapath = obj_GV.frog_datapath
-	truck_datapath = obj_GV.truck_datapath
-	airplane_datapath = obj_GV.airplane_datapath
-	ship_datapath = obj_GV.ship_datapath
-	auto_datapath = obj_GV.auto_datapath
+    images_folder_name = 'train'
+    labels_file_name = 'trainLabels.csv'
+    target_labels = {'cat', 'airplane'}
 
+    images_path = os.path.join(working_dir_path, images_folder_name)
+    files_in_images_path = set([f for f in listdir(images_path) if isfile(join(images_path, f))])
 
-labels = pd.read_csv(labelsPath, sep=',')
+    # group file ids by label
+    files_by_label = {}
+    with open(os.path.join(working_dir_path, labels_file_name)) as fh:
+        csv_reader = csv.reader(fh)
+        for (file_id, label) in csv_reader:
+            files_by_label.setdefault(label,[]).append(file_id+'.png')
 
-# labels_df = pd.DataFrame(labels)
-# print (labels.head())
+    for label, file_names in files_by_label.iteritems():
+        if label in target_labels:
+            destination_folder = join(working_dir_path, images_folder_name + '_' + label) # change folder if required
+            try:
+                os.stat(destination_folder)
+            except:
+                os.mkdir(destination_folder)
 
-labels.groupby('label').agg({'label':np.size})
-
-bird_image_index = np.array(labels_df[labels_df['label'] == 'bird']['id'])
-dog_image_index = np.array(labels_df[labels_df['label'] == 'dog']['id'])
-cat_image_index = np.array(labels_df[labels_df['label'] == 'cat']['id'])
-horse_image_index = np.array(labels_df[labels_df['label'] == 'horse']['id'])
-deer_image_index = np.array(labels_df[labels_df['label'] == 'deer']['id'])
-frog_image_index = np.array(labels_df[labels_df['label'] == 'frog']['id'])
-truck_image_index = np.array(labels_df[labels_df['label'] == 'truck']['id'])
-airplane_image_index = np.array(labels_df[labels_df['label'] == 'airplane']['id'])
-ship_image_index = np.array(labels_df[labels_df['label'] == 'ship']['id'])
-auto_image_index = np.array(labels_df[labels_df['label'] == 'automobile']['id'])
-
-label_indices = [bird_image_index,dog_image_index,cat_image_index,horse_image_index,deer_image_index,
-frog_image_index,truck_image_index,airplane_image_index,ship_image_index,auto_image_index]
-
-label_paths = [bird_datapath,dog_datapath,cat_datapath,horse_datapath,deer_datapath,
-frog_datapath,truck_datapath,airplane_datapath,ship_datapath,auto_datapath]
-# print (bird_image_index[0:10])
-
-for path,indices in zip(label_paths, label_indices):
-    print ('Done: ', path)
-    for files in glob.glob(dataPath+'*.png'):
-        filename = os.path.basename(files).split('.')[0]
-    #     print (filename)
-        if int(filename) in indices:
-            shutil.copy(files, path)
+            for file_name in files_in_images_path.intersection(set(file_names)):
+                # shutil.copy(join(images_path, file_name), destination_folder)
+                shutil.move(join(images_path, file_name), destination_folder)
