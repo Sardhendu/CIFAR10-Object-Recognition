@@ -10,22 +10,27 @@ import shutil
 
 
 if True:
-	from Tools import GlobalVariables
-	# print (conf["bird_datapath"])
-	obj_GV = GlobalVariables()
-	dataPath = obj_GV.dataPath
-	labelsPath = obj_GV.labelsPath
-	
-	bird_datapath = obj_GV.bird_datapath
-	dog_datapath = obj_GV.dog_datapath
-	cat_datapath = obj_GV.cat_datapath
-	horse_datapath = obj_GV.horse_datapath
-	deer_datapath = obj_GV.deer_datapath
-	frog_datapath = obj_GV.frog_datapath
-	truck_datapath = obj_GV.truck_datapath
-	airplane_datapath = obj_GV.airplane_datapath
-	ship_datapath = obj_GV.ship_datapath
-	auto_datapath = obj_GV.auto_datapath
+	# input your Folder structure Here:
+	parent_dir = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/'
+
+	# dataPath is the folder path to all the images
+	dataPath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainData/'
+	# labelsPath is the csv file containing the image file name and the corresponding label
+	labelsPath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainLabels.csv'
+
+	# The below are different folder path, where you want to put your Class segregated data.
+	bird_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataBird/'
+	dog_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataDog/'
+	cat_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataCat/'
+	horse_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataHorse/'
+	deer_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataDeer/'
+	frog_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataFrog/'
+	truck_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataTruck/'
+	airplane_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataAirplane/'
+	ship_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataShip/'
+	auto_datapath = '/Users/sam/All-Program/App-DataSet/Kaggle-Challenges/CIFAR-10/trainDataAuto/'
+
+
 
 
 labels = pd.read_csv(labelsPath, sep=',')
