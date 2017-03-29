@@ -17,36 +17,36 @@ import cv2
 import pickle
 import random
 
-from FeatureExtraction import feature_pixelSTD
-# str()
-# 1234
+# from FeatureExtraction import feature_pixelSTD
+# # str()
+# # 1234
     
-def create_dataset(dataPath, featureType, max_num_images=None,force_dump=None):
-	for no,images_path in enumerate(dataPath):
-		if max_num_images:
-			file_names_arr = os.listdir(images_path)[0:max_num_images]
-		else:
-			file_names_arr = os.listdir(images_path)
+# def create_dataset(dataPath, featureType, max_num_images=None,force_dump=None):
+# 	for no,images_path in enumerate(dataPath):
+# 		if max_num_images:
+# 			file_names_arr = os.listdir(images_path)[0:max_num_images]
+# 		else:
+# 			file_names_arr = os.listdir(images_path)
 
-		dataset = feature_pixelSTD(images_path,file_names_arr,image_size=32)
+# 		dataset = feature_pixelSTD(images_path,file_names_arr,image_size=32)
 
-		# Store the image as a pickle file in the directory
-		pickle_filename = os.path.basename(os.path.abspath(images_path))
-		path_to_folder = conf['parent_dir']+'/'+featureType
+# 		# Store the image as a pickle file in the directory
+# 		pickle_filename = os.path.basename(os.path.abspath(images_path))
+# 		path_to_folder = conf['parent_dir']+'/'+featureType
 
-		if not os.path.exists(path_to_folder):
-			os.makedirs(path_to_folder)
+# 		if not os.path.exists(path_to_folder):
+# 			os.makedirs(path_to_folder)
 
-		pickle_image_dir = os.path.dirname(os.path.abspath(images_path))+'/'+featureType+'/'+pickle_filename+'.pickle'
-		# print (pickle_image_dir)
-		if os.path.exists(pickle_image_dir) and not force_dump:
-			print ('The path already exists, you should force the dump')
-		else:
-			try:
-				with open(pickle_image_dir, 'wb') as f:
-					pickle.dump(dataset, f, pickle.HIGHEST_PROTOCOL)
-			except Exception as e:
-				print('Unable to save data to', pickle_image_dir, ':', e)
+# 		pickle_image_dir = os.path.dirname(os.path.abspath(images_path))+'/'+featureType+'/'+pickle_filename+'.pickle'
+# 		# print (pickle_image_dir)
+# 		if os.path.exists(pickle_image_dir) and not force_dump:
+# 			print ('The path already exists, you should force the dump')
+# 		else:
+# 			try:
+# 				with open(pickle_image_dir, 'wb') as f:
+# 					pickle.dump(dataset, f, pickle.HIGHEST_PROTOCOL)
+# 			except Exception as e:
+# 				print('Unable to save data to', pickle_image_dir, ':', e)
 
 
 

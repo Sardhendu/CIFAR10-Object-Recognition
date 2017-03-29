@@ -10,6 +10,7 @@ Below are some Feature Extraction and Modules implemented.
             --> Standarized Image
             --> Edge Features.
             --> Histogram of Gradients
+            --> ZCA whitened
     
     2. Models:
             --> K-nearest Neighbors
