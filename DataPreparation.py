@@ -128,13 +128,16 @@ class CreateBatches():
 
 
 	def generateBatches(self, dataset, labels, numBatches=10):
-		# The below three lines of code will just create a dummy array and jumble the indices so we get equal mumber of labels in all the batches.
+		'''
+		The code will just create a dummy array and jumble the indices so we get equal mumber of labels in all the batches.
+		'''
 		dummy_arr = np.arange(len(dataset))
 		nwshape = (numBatches, int(len(dummy_arr)/numBatches))
 		batch_indices = np.reshape(np.reshape(dummy_arr, nwshape).T, nwshape)
 
-		# The below code will just provide the initiator function with the training dataset and labels for the input index values.
+		# Provide the initiator function with the training dataset and labels for the input index values.
 		for indices in batch_indices:
+			np.random.shuffle(indices)
 			yield dataset[indices], labels[indices]
 
 
