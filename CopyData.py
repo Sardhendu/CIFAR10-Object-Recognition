@@ -1,7 +1,7 @@
 """
 About Me: The Input unzipped folder for CIFAR10 has the images of all the labels together.
-This module just segregates them and puts them into seperate folder.
-So ultimately the output of this module will be folders with images each representing one label of the CIFAR10 data set.
+This module just segregates them and puts them into seperate folders.
+So the output of this module will be folders with images each representing one label of the CIFAR10 data set.
 """
 
 import csv
@@ -31,10 +31,11 @@ if __name__ == '__main__':
     # group file ids by label
     files_by_label = {}
     with open(join(working_dir_path, labels_file_name)) as fh:
-        csv_reader = csv.reader(fh)
-        for (file_id, label) in csv_reader:
-            files_by_label.setdefault(label, set()).add(file_id + '.png')
+        csv_reader = csv.DictReader(fh)
+        for row in csv_reader:
+            files_by_label.setdefault(row['label'], set()).add(row['id'] + '.png')
     logger.info('Found %s file id and label pairs in labels file' % (len(files_by_label)))
+
 
     image_counter = {}
     destination_folders = {}
