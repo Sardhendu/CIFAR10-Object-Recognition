@@ -104,19 +104,21 @@ class CreateBatches():
 				with open (os.path.join(dir_to_pickle_files,label_file), 'rb') as f:
 					dataMatrix = pickle.load(f)
 					# print (dataMatrix.shape)
+                    try:
+                        np.random.shuffle(dataMatrix)
+                        testDataset[start_tst:end_tst,:] = dataMatrix[0:test_size_per_class,:]
+                        trainDataset[start_trn:end_trn,:] = dataMatrix[test_size_per_class:end,:]
+                        testLabels[start_tst:end_tst] = label_id
+                        trainLabels[start_trn:end_trn] = label_id
 
-					np.random.shuffle(dataMatrix)
-					testDataset[start_tst:end_tst,:] = dataMatrix[0:test_size_per_class,:]
-					trainDataset[start_trn:end_trn,:] = dataMatrix[test_size_per_class:end,:]
-					testLabels[start_tst:end_tst] = label_id
-					trainLabels[start_trn:end_trn] = label_id
-
-					start_tst += test_size_per_class
-					end_tst += test_size_per_class
-					start_trn += train_size_per_class
-					end_trn += train_size_per_class
-			except Exception as e:
-				print('Unable to process data from', pickle_files, ':', e)
+                        start_tst += test_size_per_class
+                        end_tst += test_size_per_class
+                        start_trn += train_size_per_class
+                        end_trn += train_size_per_class
+                    except Exception as e:
+                        print('The number of datapoints doesnt match the size of initialized ndarray: ', e1)
+			except Exception as e1:
+				print('Unable to process data from', pickle_files, ':', e1)
 				raise
 
 		print ('The training Data set size is : ', trainDataset.shape)
