@@ -81,7 +81,7 @@ def linearActivation(xIN, numInp, numOut, params, scope=None):
         b = tf.get_variable(
                 dtype='float32',
                 shape=[numOut],
-                initializer=tf.constant_initializer(1.0, seed=bSeed),
+                initializer=tf.constant_initializer(1.0),
                 name='bias')
         
         return tf.matmul(xIN, w) + b
@@ -210,3 +210,44 @@ def poolLayer(xIN, poolKernelSize, poolStride, padding, poolType='MAX', scope=No
                                   ksize=[1, poolKernelSize, poolKernelSize, 1],
                                   strides=[1, poolStride, poolStride, 1],
                                   padding=padding)
+        
+
+
+def outSoftmaxActivation(xIN, numInp, numOut, params, scope=None):
+    wMean = params['wMean']
+    wStdev = params['wStdev']
+    wSeed = params['wSeed']
+    bSeed = params['wSeed']
+    
+    with tf.variable_scope(scope or "linear-activation"):
+        w = tf.get_variable(
+                dtype='float32',
+                shape=[numInp, numOut],
+                initializer=tf.random_normal_initializer(
+                        mean=wMean, stddev=wStdev, seed=wSeed),
+                name='weight')
+        
+        b = tf.get_variable(
+                dtype='float32',
+                shape=[numOut],
+                initializer=tf.constant_initializer(1.0),
+                name='bias')
+        
+        outState = tf.matmul(xIN, w) + b
+    
+        return outState, tf.nn.softmax(outState)
+
+
+def lossOptimization(xIN, yIN, optimimzerParam=dict(optimimzer="ADAM", learning_rate=0.0001)):
+    lossCE = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=xIN, labels=yIN))
+    
+    if optimizerParam['optimizer'] == 'ADAM':
+        optimizer = tf.train.AdamOptimizer(learning_rate=optimizerParam['learning_rate']).minimize(lossCE)
+    elif optimizerParam['optimizer'] == 'RMSPROP':
+        optimizer = tf.train.RMSPropOptimizer(learning_rate=optimizerParam['learning_rate'],
+                                              momentum=optimizerParam['momentum']).minimize(lossCE)  # 0.0006  # 0.8
+    else:
+        print("Your provided optimizers do not match with any of the initialized optimizers: .........")
+        return None
+
+    return optimizer

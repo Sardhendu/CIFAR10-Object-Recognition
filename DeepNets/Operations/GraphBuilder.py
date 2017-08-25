@@ -8,14 +8,14 @@ import tensorflow as tf
 from six.moves import cPickle as pickle
 from tensorflow.python.framework import ops
 
-from Operations.CMNFunctions import convLinearActivation, batchNorm, nonLinearActivation, poolLayer
+from Operations.CMNFunctions import convLinearActivation, batchNorm, \
+    nonLinearActivation, poolLayer, linearActivation, outSoftmaxActivation
 
 
-def convGraphBuilder(xTF, axis,
-                     convKernelSize, convStride,
+def convGraphBuilder(xTF, convKernelSize, convStride,
                      poolKernelSize, poolStride,
-                     inpDepth, outDepth,
-                     layerNum, layers, isTraining=True):
+                     inpDepth, outDepth, layerNum, layers,
+                     axis=[0,1,2], isTraining=True):
     
     individual_layer_dict = dict()
     other_vars = dict()
@@ -83,40 +83,72 @@ def convGraphBuilder(xTF, axis,
 
 
 
-def nnGraphBuilder(xTF, axis, numInp, numOut, layerNum, isTraining=True):
-    l_layer1 = \
-        linearActivation(xIN=xTF,
-                         numInp=numInp,
-                         numOut=numOut,
-                         params=dict(
-                                 wMean=0, wStdev=0.1, wSeed=889, bSeed=716
-                         ),
-                         scope='Layer%s' % layerNum)
+def nnGraphBuilder(xTF, numInp, numOut,
+                   layerNum, layers, axis=[0], isTraining=True):
     
-    bn_layer1, batchMean, batchVar, mean, var = \
-        batchNorm(xIN=l_layer1,
-                  numOut=numOut,
-                  training_phase=tf.cast(isTraining, tf.bool),
-                  mAvg_decay=0.5,
-                  epsilon=1e-4,
-                  axes=axis,
-                  scope='Layer%s' % layerNum)
+    individual_layer_dict = dict()
+    other_vars = dict()
     
-    nl_layer1 = nonLinearActivation(bn_layer1,
-                                    scope='Layer%s' % layerNum)
+    if "linear" in layers:
+        layerActivation = \
+            linearActivation(xIN=xTF,
+                             numInp=numInp,
+                             numOut=numOut,
+                             params=dict(
+                                     wMean=0, wStdev=0.1, wSeed=889, bSeed=716
+                             ),
+                             scope='Layer%s' % layerNum)
+
+        individual_layer_dict.update(
+                dict(convLayer=layerActivation)
+        )
     
-    otherVars = dict(layer1OUT=l_layer1,
-                     batchMean=batchMean,
+    if "batchNorm" in layers:
+        layerActivation, batchMean, batchVar, mean, var = \
+            batchNorm(xIN=layerActivation,
+                      numOut=numOut,
+                      training_phase=tf.cast(isTraining, tf.bool),
+                      mAvg_decay=0.5,
+                      epsilon=1e-4,
+                      axes=axis,
+                      scope='Layer%s' % str(layerNum))
+
+        individual_layer_dict.update(
+                dict(batchNormLayer=layerActivation)
+        )
+
+        other_vars.update(
+                dict(batchMean=batchMean,
                      batchVar=batchVar,
                      mavgMean=mean,
-                     mavgVar=var)
+                     mavgVar=var
+                     )
+        )
+        
+    if "nonLinear" in layers:
+        layerActivation = nonLinearActivation(
+                xIN=layerActivation,
+                activation='RELU',
+                scope="Layer%s" % str(layerNum))
+
+        individual_layer_dict.update(
+                dict(nonLinearLayer=layerActivation)
+        )
     
-    return dict(xTF=xTF,
-                linearLayer=l_layer1,
-                batchNormLayer=bn_layer1,
-                nonLinearLayer=nl_layer1,
-                otherVars=otherVars
-                )
+    return layerActivation, dict(xTF=xTF,individual_layer_dict=individual_layer_dict,other_vars=other_vars)
 
 
 
+
+def outputToSoftmax(xTF, numInp, numOut,
+                    layerNum):
+    outState, softmax = \
+            outSoftmaxActivation(xIN=xTF,
+                                 numInp=numInp,
+                                 numOut=numOut,
+                                 params=dict(
+                                         wMean=0, wStdev=0.1, wSeed=889, bSeed=716
+                                 ),
+                                 scope='Layer%s' % layerNum)
+    
+    return outState, softmax

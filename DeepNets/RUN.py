@@ -10,9 +10,10 @@ from six.moves import cPickle as pickle
 from tensorflow.python.framework import ops
 
 from CIFAR_10.DataGenerator import genTrainValidFolds
-from Operations.GraphBuilder import convGraphBuilder, nnGraphBuilder
+from Operations.GraphBuilder import convGraphBuilder, nnGraphBuilder, outputToSoftmax
 from Operations.Tools import reshape_data, accuracy
 from Operations.Preprocessing import Preprocessing
+from Operations.CMNFunctions import lossOptimization
 
 
 def reset_graph():  # Reset the graph
@@ -29,12 +30,12 @@ conv = True
 myNet = dict(imageSize=(32,32),
              numLabels=2,
              numChannels=3,
-             hiddenLayers=[1024,1024],
              convKernel=[(5,5), (5,5)],
              convDepth=[3,64,64],
              convStride=[1,1],
              poolKernel=[(2,2), (2,2)],
-             poolStride=[1,1])
+             poolStride=[1,1],
+             fcLayers=[0, 1024, 1024])
 
 
 
@@ -54,36 +55,75 @@ class GraphComputer():
                                      shape=[None, self.myNet["numLabels"]],
                                      name='yInputs')
         
-        # First we Preprocess the input
+        runningCount = 1
+        
+        
+        # Convolutions Layers
         layerOutput = trainData
         for i in np.arange(2):
             # define what layer you need for one stacked convolution Layer
             layers = ["linear", "batchNorm", "nonLinear", "pool"]
             layerOutput, _ = convGraphBuilder(xTF=layerOutput,
-                                             axis=[0, 1, 2],
                                              convKernelSize=self.myNet["convKernel"][i],
                                              convStride=self.myNet["convStride"][i],
                                              poolKernelSize=self.myNet["poolKernel"][i],
                                              poolStride=self.myNet["poolStride"][i],
                                              inpDepth=self.myNet["convDepth"][i],
                                              outDepth=self.myNet["convDepth"][i + 1],
-                                             layerNum=i + 1,
+                                             layerNum=runningCount,
                                              layers=layers,
+                                             axis=[0, 1, 2],
                                              isTraining=True)
 
+            runningCount += 1
+
            
-        print ('The shape is : ', layerOutput.get_shape())
+        print ('The shape after convolution layer is : ', layerOutput.get_shape())
+        
         # We have to flatten the shape to pass it to the fully connected layer
+        # Get the features in flattened fashion
+        shapeY, shapeX, depth = layerOutput.get_shape().as_list()[1:4]
+        flattenedShape = shapeY * shapeX * depth
+        convFeaturesFlattened = tf.reshape(layerOutput, [-1, flattenedShape])
+        
+        print ('The flattened features of convolutions is: ', convFeaturesFlattened.get_shape())
+
+
+        # Fully Connected Layers
+        self.myNet["fcLayers"][0] = flattenedShape
+        layerOutput = convFeaturesFlattened
+        for j in np.arange(2):
+            k = i+1+j
+            # print (self.myNet["fcLayers"][j])
+            layers = ["linear", "batchNorm", "nonLinear"]
+            layerOutput, _ = nnGraphBuilder(xTF=layerOutput,
+                                            numInp=self.myNet["fcLayers"][j],
+                                            numOut=self.myNet["fcLayers"][j+1],
+                                            layerNum = runningCount, layers= layers,
+                                            axis=[0], isTraining=True)
+            runningCount += 1
+
+        print('The shape after the Fully connected Layer is : ', layerOutput.get_shape())
+
+        
+        # Fully connected teo Softmax layer
+        outState, softmax = outputToSoftmax(xTF=layerOutput,
+                                            numInp=layerOutput.get_shape().as_list()[1],
+                                            numOut=self.myNet["numLabels"],
+                                            layerNum=runningCount)
+
+        print('The shape of the Tensor after Out to Softmax is : ', softmax.get_shape())
         
         
-        # for i in np.arange(2):
-        #     layers
-    
+        # Loss Function and Optimization
+        optimizer = lossOptimization(xIN=outState, yIN=trainLabels,
+                                     optimimzerParam = dict(optimimzer="ADAM", learning_rate=0.0001))
+        
         return dict(
                 trainData=trainData,
                 trainLabels=trainLabels,
-                layerOutput = layerOutput
-                # optimizer=optimizer,
+                layerOutput = layerOutput,
+                optimizer=optimizer
                 # lossCE=lossCE,
                 # trainPred=outputState,
                 # wghtNew=self.weights,
@@ -144,6 +184,7 @@ class SesssionExec():
                 sess.run(tf.global_variables_initializer())
                 
                 print([op for op in tf.get_default_graph().get_operations()])
+                
                 
             break
                 
