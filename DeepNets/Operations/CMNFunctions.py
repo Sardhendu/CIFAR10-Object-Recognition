@@ -16,11 +16,11 @@ def convLinearActivation(xIN, convKernelSize, convStride, inpDepth, outDepth,
     """
     :param xIN:             The input X
     :param convKernelSize:  The Kernel size or the filter size (the dimensions should be equal) Ex: (3,3)
-    :param convStride   : How many strides
-    :param inpDepth:    The input depth, or the number of filters, for first layer impDept == numChannels
-    :param outDepth:    The output depth of the Convolution layer or number of filters
-    :param params:      Other  params such as mean stddev for gaussian dist
-    :param scope:       The name of the scope
+    :param convStride:      How many strides
+    :param inpDepth:        The input depth, or the number of filters, for first layer impDept == numChannels
+    :param outDepth:        The output depth of the Convolution layer or number of filters
+    :param params:          Other  params such as mean stddev for gaussian dist
+    :param scope:           The name of the scope
     :return:
     """
     wMean = params['wMean']
