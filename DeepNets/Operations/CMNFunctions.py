@@ -210,10 +210,14 @@ def poolLayer(xIN, poolKernelSize, poolStride, padding, poolType='MAX', scope=No
                                   ksize=[1, poolKernelSize, poolKernelSize, 1],
                                   strides=[1, poolStride, poolStride, 1],
                                   padding=padding)
+
         
+def regularize(xIN, decayParam=dict(type="dropout", keepProb=0.5, seed=6162)):
+    if decayParam["type"]=="dropout":
+        return tf.nn.dropout(xIN, decayParam["keepProb"], seed=decayParam["seed"])
 
 
-def outSoftmaxActivation(xIN, numInp, numOut, params, scope=None):
+def softmaxActivation(xIN, numInp, numOut, params, scope=None):
     wMean = params['wMean']
     wStdev = params['wStdev']
     wSeed = params['wSeed']
@@ -238,7 +242,7 @@ def outSoftmaxActivation(xIN, numInp, numOut, params, scope=None):
         return outState, tf.nn.softmax(outState)
 
 
-def lossOptimization(xIN, yIN, optimimzerParam=dict(optimimzer="ADAM", learning_rate=0.0001)):
+def lossOptimization(xIN, yIN, optimizerParam=dict(optimizer="ADAM", learning_rate=0.0001)):
     lossCE = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=xIN, labels=yIN))
     
     if optimizerParam['optimizer'] == 'ADAM':
@@ -250,4 +254,4 @@ def lossOptimization(xIN, yIN, optimimzerParam=dict(optimimzer="ADAM", learning_
         print("Your provided optimizers do not match with any of the initialized optimizers: .........")
         return None
 
-    return optimizer
+    return lossCE, optimizer

@@ -44,16 +44,16 @@ class Preprocessing():
             operations like brightness, contrast and whitening that doest arithmatic operation which many make the
             pixels value as floating point.
         '''
-        preprocessedImageIN = tf.placeholder(dtype=tf.float32,
+        imageIN = tf.placeholder(dtype=tf.float32,
                                              shape=[imageSize[0], imageSize[1], numChannels],
                                              name="Preprocessor-variableHolder")
 
         
         # Add random contrast
-        preprocessedImageOUT = self.randomFlip(preprocessedImageIN)
-        preprocessedImageOUT = self.addRandBrightness(preprocessedImageOUT)
-        preprocessedImageOUT = self.addRandContrast(preprocessedImageOUT)
-        preprocessedImageOUT = self.standarize(preprocessedImageOUT)
+        imageOUT = self.randomFlip(imageIN)
+        imageOUT = self.addRandBrightness(imageOUT)
+        imageOUT = self.addRandContrast(imageOUT)
+        imageOUT = self.standarize(imageOUT)
 
-        return dict(preprocessedImageIN=preprocessedImageIN,
-                    preprocessedImageOUT=preprocessedImageOUT)
+        return dict(imageIN=imageIN,
+                     imageOUT=imageOUT)

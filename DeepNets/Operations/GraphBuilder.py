@@ -9,7 +9,7 @@ from six.moves import cPickle as pickle
 from tensorflow.python.framework import ops
 
 from Operations.CMNFunctions import convLinearActivation, batchNorm, \
-    nonLinearActivation, poolLayer, linearActivation, outSoftmaxActivation
+    nonLinearActivation, poolLayer, regularize, linearActivation, softmaxActivation
 
 
 def convGraphBuilder(xTF, convKernelSize, convStride,
@@ -75,8 +75,16 @@ def convGraphBuilder(xTF, convKernelSize, convStride,
                                     poolStride=poolStride,
                                     padding="SAME",
                                     poolType='MAX',
-                                    scope="Layer%s" % str(layerNum))
+                                    scope="Layer%s" % str(layerNum)
+                                    )
     
+    
+    if "regularize" in layers:
+        layerActivation = regularize(
+                xIN=layerActivation,
+                decayParam=dict(type="dropout", keepProb=0.5, seed=6162)
+        )
+        
     return layerActivation, dict(xTF=xTF,individual_layer_dict=individual_layer_dict,other_vars=other_vars)
 
 
@@ -125,6 +133,7 @@ def nnGraphBuilder(xTF, numInp, numOut,
                      )
         )
         
+        
     if "nonLinear" in layers:
         layerActivation = nonLinearActivation(
                 xIN=layerActivation,
@@ -134,6 +143,13 @@ def nnGraphBuilder(xTF, numInp, numOut,
         individual_layer_dict.update(
                 dict(nonLinearLayer=layerActivation)
         )
+        
+        
+    if "regularize" in layers:
+        layerActivation = regularize(
+                xIN=layerActivation,
+                decayParam=dict(type="dropout", keepProb=0.5, seed=6162)
+        )
     
     return layerActivation, dict(xTF=xTF,individual_layer_dict=individual_layer_dict,other_vars=other_vars)
 
@@ -142,8 +158,8 @@ def nnGraphBuilder(xTF, numInp, numOut,
 
 def outputToSoftmax(xTF, numInp, numOut,
                     layerNum):
-    outState, softmax = \
-            outSoftmaxActivation(xIN=xTF,
+    outState, probLabel = \
+                softmaxActivation(xIN=xTF,
                                  numInp=numInp,
                                  numOut=numOut,
                                  params=dict(
@@ -151,4 +167,4 @@ def outputToSoftmax(xTF, numInp, numOut,
                                  ),
                                  scope='Layer%s' % layerNum)
     
-    return outState, softmax
+    return outState, probLabel

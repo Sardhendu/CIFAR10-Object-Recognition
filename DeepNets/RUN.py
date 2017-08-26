@@ -31,11 +31,15 @@ myNet = dict(imageSize=(32,32),
              numLabels=2,
              numChannels=3,
              convKernel=[(5,5), (5,5)],
-             convDepth=[3,64,64],
+             convDepth=[3,64,64],       # The first value of the array should equal to the numChannels
              convStride=[1,1],
              poolKernel=[(2,2), (2,2)],
              poolStride=[1,1],
-             fcLayers=[0, 1024, 1024])
+             fcLayers=[0, 1024, 1024],  # The first value of the array should always be zero because it is updated in
+             #  run time
+             optimizerParam=dict(optimizer='RMSPROP', learning_rate=0.0001, momentum=0.9),
+             batchSize=128,
+             epochs = 30)
 
 
 
@@ -44,7 +48,7 @@ class GraphComputer():
         self.myNet = myNet
     
 
-    def trainGraph(self):
+    def trainValidGraph(self):
         trainData = tf.placeholder(dtype=tf.float32,
                                    shape=[None, self.myNet["imageSize"][0],
                                           self.myNet["imageSize"][1],
@@ -62,7 +66,7 @@ class GraphComputer():
         layerOutput = trainData
         for i in np.arange(2):
             # define what layer you need for one stacked convolution Layer
-            layers = ["linear", "batchNorm", "nonLinear", "pool"]
+            layers = ["linear", "batchNorm", "nonLinear", "pool", "regularize"]
             layerOutput, _ = convGraphBuilder(xTF=layerOutput,
                                              convKernelSize=self.myNet["convKernel"][i],
                                              convStride=self.myNet["convStride"][i],
@@ -95,7 +99,7 @@ class GraphComputer():
         for j in np.arange(2):
             k = i+1+j
             # print (self.myNet["fcLayers"][j])
-            layers = ["linear", "batchNorm", "nonLinear"]
+            layers = ["linear", "batchNorm", "nonLinear", "regularize"]
             layerOutput, _ = nnGraphBuilder(xTF=layerOutput,
                                             numInp=self.myNet["fcLayers"][j],
                                             numOut=self.myNet["fcLayers"][j+1],
@@ -106,33 +110,93 @@ class GraphComputer():
         print('The shape after the Fully connected Layer is : ', layerOutput.get_shape())
 
         
-        # Fully connected teo Softmax layer
-        outState, softmax = outputToSoftmax(xTF=layerOutput,
-                                            numInp=layerOutput.get_shape().as_list()[1],
-                                            numOut=self.myNet["numLabels"],
-                                            layerNum=runningCount)
+        # Fully connected to Softmax layer
+        outState, probLabel = outputToSoftmax(xTF=layerOutput,
+                                              numInp=layerOutput.get_shape().as_list()[1],
+                                              numOut=self.myNet["numLabels"],
+                                              layerNum=runningCount)
 
-        print('The shape of the Tensor after Out to Softmax is : ', softmax.get_shape())
+        print('The shape of the Tensor after Out to Softmax is : ', probLabel.get_shape())
         
         
         # Loss Function and Optimization
-        optimizer = lossOptimization(xIN=outState, yIN=trainLabels,
-                                     optimimzerParam = dict(optimimzer="ADAM", learning_rate=0.0001))
+        lossCE, optimizer = lossOptimization(xIN=outState, yIN=trainLabels, optimizerParam = self.myNet[
+            "optimizerParam"])
         
         return dict(
                 trainData=trainData,
                 trainLabels=trainLabels,
-                layerOutput = layerOutput,
-                optimizer=optimizer
-                # lossCE=lossCE,
-                # trainPred=outputState,
-                # wghtNew=self.weights,
-                # poolShape=poolShape
+                optimizer=optimizer,
+                lossCE=lossCE,
+                trainPred=probLabel,
         )
     
     
-    
-    
+    # def validGraph(self):
+    #     validData = tf.placeholder(dtype=tf.float32,
+    #                                shape=[None, self.myNet["imageSize"][0],
+    #                                       self.myNet["imageSize"][1],
+    #                                       self.myNet["numChannels"]],
+    #                                name='xInputs')
+    #
+    #     validLabels = tf.placeholder(dtype=tf.float32,
+    #                                  shape=[None, self.myNet["numLabels"]],
+    #                                  name='yInputs')
+    #
+    #     runningCount = 1
+    #
+    #     # Convolutions Layers
+    #     layerOutput = trainData
+    #     for i in np.arange(2):
+    #         # define what layer you need for one stacked convolution Layer
+    #         layers = ["linear", "batchNorm", "nonLinear", "pool", "regularize"]
+    #         validLayerOutput, _ = convGraphBuilder(xTF=layerOutput,
+    #                                           convKernelSize=self.myNet["convKernel"][i],
+    #                                           convStride=self.myNet["convStride"][i],
+    #                                           poolKernelSize=self.myNet["poolKernel"][i],
+    #                                           poolStride=self.myNet["poolStride"][i],
+    #                                           inpDepth=self.myNet["convDepth"][i],
+    #                                           outDepth=self.myNet["convDepth"][i + 1],
+    #                                           layerNum=runningCount,
+    #                                           layers=layers,
+    #                                           axis=[0, 1, 2],
+    #                                           isTraining=False)
+    #
+    #         runningCount += 1
+    #
+    #     print('The shape after convolution layer is : ', layerOutput.get_shape())
+    #
+    #     # We have to flatten the shape to pass it to the fully connected layer
+    #     # Get the features in flattened fashion
+    #     shapeY, shapeX, depth = layerOutput.get_shape().as_list()[1:4]
+    #     flattenedShape = shapeY * shapeX * depth
+    #     convFeaturesFlattened = tf.reshape(layerOutput, [-1, flattenedShape])
+    #
+    #     print('The flattened features of convolutions is: ', convFeaturesFlattened.get_shape())
+    #
+    #     # Fully Connected Layers
+    #     self.myNet["fcLayers"][0] = flattenedShape
+    #     layerOutput = convFeaturesFlattened
+    #     for j in np.arange(2):
+    #         k = i + 1 + j
+    #         # print (self.myNet["fcLayers"][j])
+    #         layers = ["linear", "batchNorm", "nonLinear", "regularize"]
+    #         layerOutput, _ = nnGraphBuilder(xTF=layerOutput,
+    #                                         numInp=self.myNet["fcLayers"][j],
+    #                                         numOut=self.myNet["fcLayers"][j + 1],
+    #                                         layerNum=runningCount, layers=layers,
+    #                                         axis=[0], isTraining=True)
+    #         runningCount += 1
+    #
+    #     print('The shape after the Fully connected Layer is : ', layerOutput.get_shape())
+    #
+    #     # Fully connected to Softmax layer
+    #     outState, probLabel = outputToSoftmax(xTF=layerOutput,
+    #                                           numInp=layerOutput.get_shape().as_list()[1],
+    #                                           numOut=self.myNet["numLabels"],
+    #                                           layerNum=runningCount)
+    #
+
 class SesssionExec():
     
     def __init__(self):
@@ -140,24 +204,57 @@ class SesssionExec():
         self.imageSize=32
 
 
-    # def runPreprocessor(self, dataIN, sess):
-    #     dataOut = np.ndarray(shape=(dataIN.shape[0],dataIN.shape[1],dataIN.shape[2],dataIN.shape[3]), dtype='float32')
-    #     for numImage in np.arange(dataIN.shape[0]):
-    #         feed_dict = {
-    #             self.preprocessGraphDict['imageIN']:dataIN[numImage,:]
-    #         }
-    #         dataOut[numImage,:] = sess.run(self.preprocessGraphDict['distorted_image'],
-    #                                                   feed_dict=feed_dict)
-    #     return dataOut
-    
-    
-    
+    def runPreprocessor(self, dataIN, sess):
+        preprocessedData = np.ndarray(shape=(dataIN.shape), dtype='float32')
+        for numImage in np.arange(dataIN.shape[0]):
+            feed_dict = {
+                self.preprocessGraphDict['imageIN']:dataIN[numImage,:]
+            }
+            preprocessedData[numImage,:] = sess.run(self.preprocessGraphDict['imageOUT'],
+                                                      feed_dict=feed_dict)
+        return preprocessedData
+
+
+    def trainModel(self, dataIN, labelIN, sess):
+        batchSize = myNet["batchSize"]
+        numBatches = int(np.ceil(dataIN.shape[0] / batchSize))
         
+        print (dataIN.shape, numBatches, batchSize)
+        for numBatch in np.arange(numBatches):
+            batchData = dataIN[numBatch * batchSize: (numBatch + 1) * batchSize]
+            batchLabels = labelIN[numBatch * batchSize: (numBatch + 1) * batchSize]
+            # print('The shape for Batch Data, Batch Labels is: ', batchData.shape, batchLabels.shape)
+            # print('The shape for Batch L is: ', batchData.shape)
+            feed_dict = {
+                self.trainGraphDict['trainData']: batchData,
+                self.trainGraphDict['trainLabels']: batchLabels
+            }
+
+            _, loss, tpred = sess.run([self.trainGraphDict['optimizer'],
+                                       self.trainGraphDict['lossCE'],
+                                       self.trainGraphDict['trainPred']],
+                                      feed_dict=feed_dict)
+
+
+            if ((numBatch + 1) % 50 == 0) or ((numBatch + 1) == numBatches):
+                tacc = accuracy(tpred, batchLabels)
+                print("Fold: " + str(self.foldNUM + 1) +
+                      ", Epoch: " + str(self.epoch + 1) +
+                      ", Mini Batch: " + str(numBatch + 1) +
+                      ", Loss= " + "{:.6f}".format(loss) +
+                      ", Training Accuracy= " + "{:.5f}".format(tacc))
+
+        return loss, tpred
+
         
     def execute(self):
         meanValidAcc = 0
-        for foldNUM, (trainDataIN, trainLabelsIN, validDataIN, validLabelsIN, labelDict) in enumerate(
+        for foldNUM, (trainDataIN, trainLabelsIN,
+                      validDataIN, validLabelsIN, labelDict
+                      ) in enumerate(
                 genTrainValidFolds(self.featureDIR, oneHot=True)):
+            
+            self.foldNUM = foldNUM
             print('')
             print('##########################################################################################')
             trainDataIN, _ = reshape_data(trainDataIN,
@@ -167,6 +264,7 @@ class SesssionExec():
             validDataIN, _ = reshape_data(validDataIN,
                                           imageSize=myNet["imageSize"][0],
                                           numChannels=myNet["numChannels"])
+            
             print('')
             print('Validation Data and Labels shape: ', validDataIN.shape, validLabelsIN.shape)
             print('Training Data and Labels shape: ', trainDataIN.shape, trainLabelsIN.shape)
@@ -174,18 +272,26 @@ class SesssionExec():
             print('')
             
             # Step 1: First we create the Pre-processing Graph:
-            preprocessDict = Preprocessing().preprocessImageGraph(
-                    imageSize=myNet["imageSize"],
-                    numChannels=myNet["numChannels"])
+            self.preprocessGraphDict = Preprocessing().preprocessImageGraph(
+                                                            imageSize=myNet["imageSize"],
+                                                            numChannels=myNet["numChannels"])
             
-            trainDict = GraphComputer(myNet).trainGraph()
+            self.trainGraphDict = GraphComputer(myNet).trainGraph()
             
             with tf.Session() as sess:
                 sess.run(tf.global_variables_initializer())
-                
-                print([op for op in tf.get_default_graph().get_operations()])
-                
-                
+
+                for epoch in range(myNet["epochs"]):
+                    self.epoch = epoch
+                    # print([op for op in tf.get_default_graph().get_operations()])
+                    preprocessedTrainData = self.runPreprocessor(dataIN=trainDataIN, sess=sess)
+                    
+                    print ('################## ', preprocessedTrainData.shape)
+    
+                    loss, tpred = self.trainModel(dataIN=trainDataIN,
+                                                  labelIN=trainLabelsIN,
+                                                  sess=sess)
+                    
             break
                 
             # Now we create the training Graph
