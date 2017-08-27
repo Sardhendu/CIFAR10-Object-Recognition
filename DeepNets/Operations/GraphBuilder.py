@@ -9,13 +9,20 @@ from six.moves import cPickle as pickle
 from tensorflow.python.framework import ops
 
 from Operations.CMNFunctions import convLinearActivation, batchNorm, \
-    nonLinearActivation, poolLayer, regularize, linearActivation, softmaxActivation
+    nonLinearActivation, poolLayer, dropout, linearActivation, softmaxActivation
 
 
-def convGraphBuilder(xTF, convKernelSize, convStride,
-                     poolKernelSize, poolStride,
-                     inpDepth, outDepth, layerNum, layers,
-                     axis=[0,1,2], isTraining=True):
+
+
+def convGraphBuilder(xTF, convKernel, convStride, inpDepth, outDepth,
+                     poolKernel, poolStride, dropoutParam, isTraining, layers, layerNum,
+                     axis=[0,1,2]):
+    padding = "SAME"
+    poolType = "MAX"
+    nonLinearAct = "RELU"
+    mAvg_decay = 0.5
+    epsilon = 1e-4
+    scope = 'Layer%s' % str(layerNum)
     
     individual_layer_dict = dict()
     other_vars = dict()
@@ -23,29 +30,30 @@ def convGraphBuilder(xTF, convKernelSize, convStride,
     if "linear" in layers:
         layerActivation = convLinearActivation(
                 xIN=xTF,
-                convKernelSize=convKernelSize,
+                convKernelSize=convKernel,
                 convStride=convStride,
                 inpDepth=inpDepth,
                 outDepth=outDepth,
-                padding='SAME',
+                padding=padding,
                 params=dict(
                         wMean=0, wStdev=0.1,
                         wSeed=231, bSeed=443),
-                scope='Layer%s' % str(layerNum))
+                scope=scope)
 
         individual_layer_dict.update(
                 dict(convLayer=layerActivation)
         )
     
+
     if "batchNorm" in layers:
         layerActivation, batchMean, batchVar, mean, var = \
             batchNorm(xIN=layerActivation,
                       numOut=outDepth,
-                      training_phase=tf.cast(isTraining, tf.bool),
-                      mAvg_decay=0.5,
-                      epsilon=1e-4,
+                      training_phase=isTraining,
+                      mAvg_decay=mAvg_decay,
+                      epsilon=epsilon,
                       axes=axis,
-                      scope='Layer%s' % str(layerNum))
+                      scope=scope)
 
         individual_layer_dict.update(
                 dict(batchNormLayer=layerActivation)
@@ -58,31 +66,34 @@ def convGraphBuilder(xTF, convKernelSize, convStride,
                      mavgVar=var
                      )
         )
-        
+
+
     if "nonLinear" in layers:
         layerActivation = nonLinearActivation(
                                 xIN=layerActivation,
-                                activation='RELU',
-                                scope="Layer%s" % str(layerNum))
+                                activation=nonLinearAct,
+                                scope=scope)
 
         individual_layer_dict.update(
                 dict(nonLinearLayer=layerActivation)
         )
-        
+
+    
+    
     if "pool" in layers:
         layerActivation = poolLayer(xIN=layerActivation,
-                                    poolKernelSize=poolKernelSize,
+                                    poolKernelSize=poolKernel,
                                     poolStride=poolStride,
-                                    padding="SAME",
-                                    poolType='MAX',
-                                    scope="Layer%s" % str(layerNum)
+                                    padding=padding,
+                                    poolType=poolType,
+                                    scope=scope
                                     )
-    
-    
-    if "regularize" in layers:
-        layerActivation = regularize(
+
+
+    if "dropout" in layers:
+        layerActivation = dropout(
                 xIN=layerActivation,
-                decayParam=dict(type="dropout", keepProb=0.5, seed=6162)
+                decayParam=dropoutParam
         )
         
     return layerActivation, dict(xTF=xTF,individual_layer_dict=individual_layer_dict,other_vars=other_vars)
@@ -91,8 +102,14 @@ def convGraphBuilder(xTF, convKernelSize, convStride,
 
 
 
-def nnGraphBuilder(xTF, numInp, numOut,
-                   layerNum, layers, axis=[0], isTraining=True):
+def nnGraphBuilder(xTF, numInp, numOut, dropoutParam, isTraining, layers,
+                   layerNum, axis=[0]):
+    
+
+    nonLinearAct = "RELU"
+    mAvg_decay = 0.5
+    epsilon = 1e-4
+    scope = 'Layer%s' % str(layerNum)
     
     individual_layer_dict = dict()
     other_vars = dict()
@@ -105,21 +122,22 @@ def nnGraphBuilder(xTF, numInp, numOut,
                              params=dict(
                                      wMean=0, wStdev=0.1, wSeed=889, bSeed=716
                              ),
-                             scope='Layer%s' % layerNum)
+                             scope=scope)
 
         individual_layer_dict.update(
                 dict(convLayer=layerActivation)
         )
-    
+
+
     if "batchNorm" in layers:
         layerActivation, batchMean, batchVar, mean, var = \
             batchNorm(xIN=layerActivation,
                       numOut=numOut,
                       training_phase=tf.cast(isTraining, tf.bool),
-                      mAvg_decay=0.5,
-                      epsilon=1e-4,
+                      mAvg_decay=mAvg_decay,
+                      epsilon=epsilon,
                       axes=axis,
-                      scope='Layer%s' % str(layerNum))
+                      scope=scope)
 
         individual_layer_dict.update(
                 dict(batchNormLayer=layerActivation)
@@ -132,23 +150,24 @@ def nnGraphBuilder(xTF, numInp, numOut,
                      mavgVar=var
                      )
         )
-        
-        
+
+
     if "nonLinear" in layers:
         layerActivation = nonLinearActivation(
                 xIN=layerActivation,
-                activation='RELU',
-                scope="Layer%s" % str(layerNum))
+                activation=nonLinearAct,
+                scope=scope)
 
         individual_layer_dict.update(
                 dict(nonLinearLayer=layerActivation)
         )
+
+
         
-        
-    if "regularize" in layers:
-        layerActivation = regularize(
+    if "dropout" in layers:
+        layerActivation = dropout(
                 xIN=layerActivation,
-                decayParam=dict(type="dropout", keepProb=0.5, seed=6162)
+                decayParam=dropoutParam
         )
     
     return layerActivation, dict(xTF=xTF,individual_layer_dict=individual_layer_dict,other_vars=other_vars)

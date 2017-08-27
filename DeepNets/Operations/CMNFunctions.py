@@ -212,9 +212,8 @@ def poolLayer(xIN, poolKernelSize, poolStride, padding, poolType='MAX', scope=No
                                   padding=padding)
 
         
-def regularize(xIN, decayParam=dict(type="dropout", keepProb=0.5, seed=6162)):
-    if decayParam["type"]=="dropout":
-        return tf.nn.dropout(xIN, decayParam["keepProb"], seed=decayParam["seed"])
+def dropout(xIN, decayParam=dict(keepProb=0.5, seed=6162)):
+    return tf.nn.dropout(xIN, decayParam["keepProb"], seed=decayParam["seed"])
 
 
 def softmaxActivation(xIN, numInp, numOut, params, scope=None):
