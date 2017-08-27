@@ -11,30 +11,30 @@ import tensorflow as tf
 
 
 
-def convLinearActivation(xIN, convKernelSize, convStride, inpDepth, outDepth,
-                         padding, params=None, scope=None):
-    """
-    :param xIN:             The input X
-    :param convKernelSize:  The Kernel size or the filter size (the dimensions should be equal) Ex: (3,3)
-    :param convStride:      How many strides
-    :param inpDepth:        The input depth, or the number of filters, for first layer impDept == numChannels
-    :param outDepth:        The output depth of the Convolution layer or number of filters
-    :param params:          Other  params such as mean stddev for gaussian dist
-    :param scope:           The name of the scope
+
+def convLinearActivation(xIN, convShape, stride, padding,
+                         wgthMean, wghtStddev, bias, seed, scope=None):
+    
+    '''
+    :param xIN:             INput Data
+    :param convShape:       [kernelY, kernelX, inpDepth, outDepth]
+    :param stride:          Convolution stride
+    :param padding:         padding : always "SAME"
+    :param wgthMean:        Mean of Weight mostly 0
+    :param wghtStddev:      Standard Deviation for weight mostly 0.05
+    :param bias:            Bias value 1.0 or 0.5 ...
+    :param seed:            The initialization seed
+    :param scope:           Scope Name
     :return:
-    """
-    wMean = params['wMean']
-    wStdev = params['wStdev']
-    wSeed = params['wSeed']
-    bSeed = params['wSeed']
+    '''
 
-
+    kernelY, kernelX, inpDepth, outDepth = convShape
     with tf.variable_scope(scope or "convLinear-activation"):
         w = tf.get_variable(
                 dtype='float32',
-                shape=[convKernelSize[0], convKernelSize[1], inpDepth, outDepth],
+                shape=convShape,
                 initializer=tf.random_normal_initializer(
-                        mean=wMean, stddev=wStdev, seed=wSeed
+                        mean=wgthMean, stddev=wghtStddev, seed=seed
                 ),
                 name="convWeight"
         )
@@ -43,45 +43,43 @@ def convLinearActivation(xIN, convKernelSize, convStride, inpDepth, outDepth,
         b = tf.get_variable(
                 dtype='float32',
                 shape=[outDepth],
-                initializer=tf.random_normal_initializer(1.0, seed=bSeed),
+                initializer=tf.constant_initializer(bias),
                 name="convBias"
                 
         )
-        
-        print (w.get_shape())
-        print (b.get_shape())
-        print (xIN.get_shape())
 
-        return tf.nn.conv2d(xIN, w, [1, convStride, convStride, 1], padding=padding) + b # Same padding
-        # return = tf.nn.bias_add(x, b)
+        return tf.nn.conv2d(xIN, w, [1, stride, stride, 1], padding=padding) + b
+    
     
 # class Activations():
-def linearActivation(xIN, numInp, numOut, params, scope=None):
+def linearActivation(xIN, inpOutShape, wghtMean, wghtStddev,
+                     bias, seed, scope=None):
     """
-    :param x:           Input Data
-    :param numInp:      number of inputs units
-    :param numOut:      number of output units
-    :param params:      parameters for linear function Examples {wMean=0.0, wStdev=0.1, wSeed=6432, bSeed=928}
-    :param scope:       Scope name (Layer1 or Layer2 depending on what your layer is)
-    :return:            A computational graph of the processes of the linear activation
+    
+    :param xIN:             Data input
+    :param inpOutShape:     Tha shape of hidden layers [numInp, numOut]
+    :param wghtMean:        Mean of Weight mostly 0
+    :param wghtStddev:      Standard Deviation for weight mostly 0.05
+    :param bias:            Bias value 1.0 or 0.5 .
+    :param seed:            The initialization seed
+    :param scope:           The scope name
+    :return:
     """
-    wMean = params['wMean']
-    wStdev = params['wStdev']
-    wSeed = params['wSeed']
-    bSeed = params['wSeed']
 
+    numInp, numOut = inpOutShape
     with tf.variable_scope(scope or "linear-activation"):
         w = tf.get_variable(
                 dtype='float32',
-                shape=[numInp, numOut],
+                shape=inpOutShape,    # [numInp, numOut]
                 initializer=tf.random_normal_initializer(
-                        mean=wMean, stddev=wStdev, seed=wSeed),
+                        mean=wghtMean, stddev=wghtStddev, seed=seed
+                ),
                 name='weight')
         
         b = tf.get_variable(
                 dtype='float32',
                 shape=[numOut],
-                initializer=tf.constant_initializer(1.0),
+                initializer=tf.constant_initializer(bias),
                 name='bias')
         
         return tf.matmul(xIN, w) + b
@@ -187,11 +185,11 @@ def nonLinearActivation(xIN, activation='RELU', scope=None):
             return tf.sigmoid(xIN)
 
 
-def poolLayer(xIN, poolKernelSize, poolStride, padding, poolType='MAX', scope=None):
+def poolLayer(xIN, poolShape, poolStride, padding, poolType='MAX', scope=None):
     """
     :param xIN:                 The input X
-    :param poolKernelSize:      The pooling kernel or filter size, Ex : (2,2)
-    :param poolStride:          The pooling Stride or filter stride Ex ; (1,1)
+    :param poolKernelSize:      The pooling kernel or filter size, Ex : [1,2,2,1]
+    :param poolStride:          The pooling Stride or filter stride Ex ; 1
     :param padding:             padding normally "SAME"
     :param poolType:            The pool type "Average pooling or max pooling"
     :param scope:               The name of the scope
@@ -201,19 +199,18 @@ def poolLayer(xIN, poolKernelSize, poolStride, padding, poolType='MAX', scope=No
     with tf.variable_scope(scope or "Pool-Layer"):
         if poolType == 'MAX':
             return tf.nn.max_pool(xIN,
-                                  ksize=[1, poolKernelSize[0],
-                                         poolKernelSize[1], 1],
+                                  ksize=poolShape,
                                   strides=[1, poolStride, poolStride, 1],
                                   padding=padding)
         elif poolType == 'AVG':
             return tf.nn.avg_pool(xIN,
-                                  ksize=[1, poolKernelSize, poolKernelSize, 1],
+                                  ksize=poolShape,
                                   strides=[1, poolStride, poolStride, 1],
                                   padding=padding)
 
         
-def dropout(xIN, decayParam=dict(keepProb=0.5, seed=6162)):
-    return tf.nn.dropout(xIN, decayParam["keepProb"], seed=decayParam["seed"])
+def dropout(xIN, keepProb, seed):
+    return tf.nn.dropout(xIN, keepProb, seed=seed)
 
 
 def softmaxActivation(xIN, numInp, numOut, params, scope=None):

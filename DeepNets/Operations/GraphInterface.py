@@ -12,32 +12,33 @@ from Operations.CMNFunctions import convLinearActivation, batchNorm, \
     nonLinearActivation, poolLayer, dropout, linearActivation, softmaxActivation
 
 
+padding = "SAME"
+poolType = "MAX"
+nonLinearAct = "RELU"
+mAvg_decay = 0.5
+epsilon = 1e-4
 
 
-def convGraphBuilder(xTF, convKernel, convStride, inpDepth, outDepth,
-                     poolKernel, poolStride, dropoutParam, isTraining, layers, layerNum,
-                     axis=[0,1,2]):
-    padding = "SAME"
-    poolType = "MAX"
-    nonLinearAct = "RELU"
-    mAvg_decay = 0.5
-    epsilon = 1e-4
+def convGraphBuilder(xTF, convParams, poolParams, dropoutParams,
+                     isTraining, layers, layerNum, axis=[0,1,2]):
+   
     scope = 'Layer%s' % str(layerNum)
     
     individual_layer_dict = dict()
     other_vars = dict()
+
+    kernelY, kernelX, inpDepth, outDepth = convParams["shape"]
     
     if "linear" in layers:
         layerActivation = convLinearActivation(
                 xIN=xTF,
-                convKernelSize=convKernel,
-                convStride=convStride,
-                inpDepth=inpDepth,
-                outDepth=outDepth,
+                convShape=convParams["shape"],
+                stride=convParams["stride"],
                 padding=padding,
-                params=dict(
-                        wMean=0, wStdev=0.1,
-                        wSeed=231, bSeed=443),
+                wgthMean=convParams["wghtMean"],
+                wghtStddev=convParams["wghtStddev"],
+                bias=convParams["bias"],
+                seed=convParams["seed"],
                 scope=scope)
 
         individual_layer_dict.update(
@@ -82,8 +83,8 @@ def convGraphBuilder(xTF, convKernel, convStride, inpDepth, outDepth,
     
     if "pool" in layers:
         layerActivation = poolLayer(xIN=layerActivation,
-                                    poolKernelSize=poolKernel,
-                                    poolStride=poolStride,
+                                    poolShape=poolParams["shape"],
+                                    poolStride=poolParams["stride"],
                                     padding=padding,
                                     poolType=poolType,
                                     scope=scope
@@ -93,7 +94,8 @@ def convGraphBuilder(xTF, convKernel, convStride, inpDepth, outDepth,
     if "dropout" in layers:
         layerActivation = dropout(
                 xIN=layerActivation,
-                decayParam=dropoutParam
+                keepProb=dropoutParams["keepProb"],
+                seed = dropoutParams["seed"]
         )
         
     return layerActivation, dict(xTF=xTF,individual_layer_dict=individual_layer_dict,other_vars=other_vars)
@@ -102,26 +104,23 @@ def convGraphBuilder(xTF, convKernel, convStride, inpDepth, outDepth,
 
 
 
-def nnGraphBuilder(xTF, numInp, numOut, dropoutParam, isTraining, layers,
+def nnGraphBuilder(xTF, linearParams, dropoutParams, isTraining, layers,
                    layerNum, axis=[0]):
-    
 
-    nonLinearAct = "RELU"
-    mAvg_decay = 0.5
-    epsilon = 1e-4
     scope = 'Layer%s' % str(layerNum)
     
     individual_layer_dict = dict()
     other_vars = dict()
-    
+
+    numInp, numOut = linearParams["shape"]
     if "linear" in layers:
         layerActivation = \
             linearActivation(xIN=xTF,
-                             numInp=numInp,
-                             numOut=numOut,
-                             params=dict(
-                                     wMean=0, wStdev=0.1, wSeed=889, bSeed=716
-                             ),
+                             inpOutShape=linearParams["shape"],
+                             wghtMean=linearParams["wghtMean"],
+                             wghtStddev=linearParams["wghtStddev"],
+                             bias=linearParams["bias"],
+                             seed=linearParams["seed"],
                              scope=scope)
 
         individual_layer_dict.update(
@@ -133,7 +132,7 @@ def nnGraphBuilder(xTF, numInp, numOut, dropoutParam, isTraining, layers,
         layerActivation, batchMean, batchVar, mean, var = \
             batchNorm(xIN=layerActivation,
                       numOut=numOut,
-                      training_phase=tf.cast(isTraining, tf.bool),
+                      training_phase=isTraining,
                       mAvg_decay=mAvg_decay,
                       epsilon=epsilon,
                       axes=axis,
@@ -163,11 +162,11 @@ def nnGraphBuilder(xTF, numInp, numOut, dropoutParam, isTraining, layers,
         )
 
 
-        
     if "dropout" in layers:
         layerActivation = dropout(
                 xIN=layerActivation,
-                decayParam=dropoutParam
+                keepProb=dropoutParams["keepProb"],
+                seed = dropoutParams["seed"]
         )
     
     return layerActivation, dict(xTF=xTF,individual_layer_dict=individual_layer_dict,other_vars=other_vars)
