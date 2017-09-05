@@ -238,16 +238,37 @@ def softmaxActivation(xIN, numInp, numOut, params, scope=None):
         return outState, tf.nn.softmax(outState)
 
 
-def lossOptimization(xIN, yIN, optimizerParam=dict(optimizer="ADAM", learning_rate=0.0001)):
+
+def lossOptimization(xIN, yIN, optimizerParams, learningRateDecay = True):
+    
+    learningRate = optimizerParams["learningRate"]
+    momentum = optimizerParams["momentum"]
+    optimizerType = optimizerParams["optimizer"]
+    
+    globalStep = tf.Variable(0, dtype=tf.float32)
+    if learningRateDecay:
+        decayRate = optimizerParams["learningDecayRate"]
+        trainSize = optimizerParams["trainSize"]
+        batchSize = optimizerParams["batchSize"]
+        learningRate = tf.train.exponential_decay(learningRate,
+                                                   globalStep * batchSize,  # Used for decay computation
+                                                   trainSize,  # Decay steps
+                                                   decayRate,  # Decay rate
+                                                   staircase=True)  # Will decay the learning rate in discrete interval
+    
     lossCE = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=xIN, labels=yIN))
     
-    if optimizerParam['optimizer'] == 'ADAM':
-        optimizer = tf.train.AdamOptimizer(learning_rate=optimizerParam['learning_rate']).minimize(lossCE)
-    elif optimizerParam['optimizer'] == 'RMSPROP':
-        optimizer = tf.train.RMSPropOptimizer(learning_rate=optimizerParam['learning_rate'],
-                                              momentum=optimizerParam['momentum']).minimize(lossCE)  # 0.0006  # 0.8
-    else:
-        print("Your provided optimizers do not match with any of the initialized optimizers: .........")
-        return None
 
-    return lossCE, optimizer
+    if optimizerType == 'ADAM':
+        optimizer = (tf.train.AdamOptimizer(learning_rate=learningRate)
+                     .minimize(lossCE, global_step=globalStep))
+        
+    elif optimizerType== 'RMSPROP':
+        optimizer = (tf.train.RMSPropOptimizer(learning_rate=learningRate,
+                                               momentum=momentum)
+                     .minimize(lossCE, global_step=globalStep)
+                    )
+    else:
+        raise ValueError('Your provided optimizers do not match with any of the initialized optimizers')
+
+    return lossCE, optimizer, learningRate
