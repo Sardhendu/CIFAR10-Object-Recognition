@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="63ae8c1e-15ea-4209-bb6f-d90b9d1ffcb8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DeepNets/.ipynb_checkpoints/Tensorflow_LrngRateDecay-checkpoint.ipynb" afterPath="$PROJECT_DIR$/DeepNets/.ipynb_checkpoints/Tensorflow_LrngRateDecay-checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DeepNets/.ipynb_checkpoints/RUN-checkpoint.ipynb" afterPath="$PROJECT_DIR$/DeepNets/.ipynb_checkpoints/RUN-checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DeepNets/Operations/CMNFunctions.py" afterPath="$PROJECT_DIR$/DeepNets/Operations/CMNFunctions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py" afterPath="$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DeepNets/RUN.ipynb" afterPath="$PROJECT_DIR$/DeepNets/RUN.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DeepNets/Tensorflow_LrngRateDecay.ipynb" afterPath="$PROJECT_DIR$/DeepNets/Tensorflow_LrngRateDecay.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Models-2-Class/ConvNets.ipynb" afterPath="$PROJECT_DIR$/Models-2-Class/ConvNets.ipynb" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,7 +24,7 @@
       <file leaf-file-name="Preprocessing.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DeepNets/Operations/Preprocessing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
+            <state relative-caret-position="640">
               <caret line="42" column="112" lean-forward="false" selection-start-line="42" selection-start-column="112" selection-end-line="42" selection-end-column="112" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
@@ -30,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CMNFunctions.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CMNFunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DeepNets/Operations/CMNFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="669">
-              <caret line="225" column="56" lean-forward="false" selection-start-line="225" selection-start-column="31" selection-end-line="225" selection-end-column="56" />
+            <state relative-caret-position="160">
+              <caret line="254" column="0" lean-forward="true" selection-start-line="254" selection-start-column="0" selection-end-line="254" selection-end-column="0" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
               </folding>
@@ -45,8 +48,8 @@
       <file leaf-file-name="RUN.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DeepNets/RUN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2992">
-              <caret line="175" column="62" lean-forward="true" selection-start-line="175" selection-start-column="62" selection-end-line="175" selection-end-column="62" />
+            <state relative-caret-position="2737">
+              <caret line="175" column="62" lean-forward="false" selection-start-line="175" selection-start-column="62" selection-end-line="175" selection-end-column="62" />
               <folding>
                 <element signature="e#1#32#0" expanded="true" />
               </folding>
@@ -54,11 +57,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GraphInterface.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="GraphInterface.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="27">
-              <caret line="16" column="21" lean-forward="false" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
+            <state relative-caret-position="840">
+              <caret line="205" column="18" lean-forward="false" selection-start-line="205" selection-start-column="4" selection-end-line="205" selection-end-column="18" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -69,8 +72,8 @@
       <file leaf-file-name="Tools.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DeepNets/Operations/Tools.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="561">
-              <caret line="30" column="130" lean-forward="false" selection-start-line="30" selection-start-column="130" selection-end-line="30" selection-end-column="130" />
+            <state relative-caret-position="510">
+              <caret line="30" column="130" lean-forward="true" selection-start-line="30" selection-start-column="130" selection-end-line="30" selection-end-column="130" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -114,14 +117,14 @@
       <list>
         <option value="$PROJECT_DIR$/__init__.py" />
         <option value="$PROJECT_DIR$/DeepNets/Operations/NetworkDebugger.py" />
-        <option value="$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py" />
         <option value="$PROJECT_DIR$/DeepNets/Understand-TensorFlow.ipynb" />
-        <option value="$PROJECT_DIR$/DeepNets/Operations/CMNFunctions.py" />
         <option value="$PROJECT_DIR$/DeepNets/RUN.ipynb" />
+        <option value="$PROJECT_DIR$/DeepNets/Operations/CMNFunctions.py" />
+        <option value="$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" fullScreen="true">
     <option name="x" value="1440" />
     <option name="y" value="-157" />
     <option name="width" value="1325" />
@@ -158,7 +161,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -182,6 +184,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -312,15 +315,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1440" y="-157" width="1325" height="1057" extended-state="0" />
+    <frame x="1440" y="-180" width="2560" height="1080" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19329695" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.100079425" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35062894" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23951782" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23947577" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32966456" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -764,30 +767,20 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DeepNets/Understand-TensorFlow.ipynb" />
+    <entry file="file://$PROJECT_DIR$/DeepNets/RUN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2737">
+          <caret line="175" column="62" lean-forward="false" selection-start-line="175" selection-start-column="62" selection-end-line="175" selection-end-column="62" />
+          <folding>
+            <element signature="e#1#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DeepNets/RUN.ipynb">
       <provider selected="true" editor-type-id="ipnb-editor">
         <state>
           <selected id="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DeepNets/Operations/Preprocessing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="42" column="112" lean-forward="false" selection-start-line="42" selection-start-column="112" selection-end-line="42" selection-end-column="112" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DeepNets/Operations/Tools.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="30" column="130" lean-forward="false" selection-start-line="30" selection-start-column="130" selection-end-line="30" selection-end-column="130" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -801,20 +794,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DeepNets/RUN.py">
+    <entry file="file://$PROJECT_DIR$/DeepNets/Operations/Preprocessing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2992">
-          <caret line="175" column="62" lean-forward="true" selection-start-line="175" selection-start-column="62" selection-end-line="175" selection-end-column="62" />
+        <state relative-caret-position="640">
+          <caret line="42" column="112" lean-forward="false" selection-start-line="42" selection-start-column="112" selection-end-line="42" selection-end-column="112" />
           <folding>
-            <element signature="e#1#32#0" expanded="true" />
+            <element signature="e#0#31#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py">
+    <entry file="file://$PROJECT_DIR$/DeepNets/Operations/Tools.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="27">
-          <caret line="16" column="21" lean-forward="false" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
+        <state relative-caret-position="510">
+          <caret line="30" column="130" lean-forward="true" selection-start-line="30" selection-start-column="130" selection-end-line="30" selection-end-column="130" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
@@ -823,10 +816,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DeepNets/Operations/CMNFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="669">
-          <caret line="225" column="56" lean-forward="false" selection-start-line="225" selection-start-column="31" selection-end-line="225" selection-end-column="56" />
+        <state relative-caret-position="160">
+          <caret line="254" column="0" lean-forward="true" selection-start-line="254" selection-start-column="0" selection-end-line="254" selection-end-column="0" />
           <folding>
             <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="840">
+          <caret line="205" column="18" lean-forward="false" selection-start-line="205" selection-start-column="4" selection-end-line="205" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
           </folding>
         </state>
       </provider>

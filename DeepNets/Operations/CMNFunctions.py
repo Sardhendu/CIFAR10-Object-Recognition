@@ -11,6 +11,10 @@ import tensorflow as tf
 
 
 
+# Important Note: It is always a good idea to bind the a functionality under a name scope, this will help
+# tensorboard understand the different scopes of operation and hence plot the computation Graph in a structured
+# way.
+
 
 def convLinearActivation(xIN, convShape, stride, padding,
                          wgthMean, wghtStddev, bias, seed, scope=None):
@@ -29,27 +33,30 @@ def convLinearActivation(xIN, convShape, stride, padding,
     '''
 
     kernelY, kernelX, inpDepth, outDepth = convShape
-    with tf.variable_scope(scope or "convLinear-activation"):
-        w = tf.get_variable(
-                dtype='float32',
-                shape=convShape,
-                initializer=tf.random_normal_initializer(
-                        mean=wgthMean, stddev=wghtStddev, seed=seed
-                ),
-                name="convWeight"
-        )
-
-
-        b = tf.get_variable(
-                dtype='float32',
-                shape=[outDepth],
-                initializer=tf.constant_initializer(bias),
-                name="convBias"
-                
-        )
-
-        return tf.nn.conv2d(xIN, w, [1, stride, stride, 1], padding=padding) + b
+    with tf.name_scope('Conv%s'%scope):
+        with tf.variable_scope('Conv%s'%scope):
+            w = tf.get_variable(
+                    dtype='float32',
+                    shape=convShape,
+                    initializer=tf.random_normal_initializer(
+                            mean=wgthMean, stddev=wghtStddev, seed=seed
+                    ),
+                    name="convWeight"
+            )
     
+    
+            b = tf.get_variable(
+                    dtype='float32',
+                    shape=[outDepth],
+                    initializer=tf.constant_initializer(bias),
+                    name="convBias"
+                    
+            )
+
+            tf.summary.histogram("convWeights", w)
+            tf.summary.histogram("convbias", b)
+            return tf.nn.conv2d(xIN, w, [1, stride, stride, 1], padding=padding) + b
+        
     
 # class Activations():
 def linearActivation(xIN, inpOutShape, wghtMean, wghtStddev,
@@ -67,23 +74,25 @@ def linearActivation(xIN, inpOutShape, wghtMean, wghtStddev,
     """
 
     numInp, numOut = inpOutShape
-    with tf.variable_scope(scope or "linear-activation"):
-        w = tf.get_variable(
-                dtype='float32',
-                shape=inpOutShape,    # [numInp, numOut]
-                initializer=tf.random_normal_initializer(
-                        mean=wghtMean, stddev=wghtStddev, seed=seed
-                ),
-                name='weight')
-        
-        b = tf.get_variable(
-                dtype='float32',
-                shape=[numOut],
-                initializer=tf.constant_initializer(bias),
-                name='bias')
-        
-        return tf.matmul(xIN, w) + b
+    with tf.name_scope(scope):
+        with tf.variable_scope(scope):
+            w = tf.get_variable(
+                    dtype='float32',
+                    shape=inpOutShape,    # [numInp, numOut]
+                    initializer=tf.random_normal_initializer(
+                            mean=wghtMean, stddev=wghtStddev, seed=seed
+                    ),
+                    name='weight')
+            
+            b = tf.get_variable(
+                    dtype='float32',
+                    shape=[numOut],
+                    initializer=tf.constant_initializer(bias),
+                    name='bias')
 
+            tf.summary.histogram("fcWeights", w)
+            tf.summary.histogram("fcBias", b)
+            return tf.matmul(xIN, w) + b
 
 
 
@@ -119,56 +128,57 @@ def batchNorm(xIN, numOut,
     The parameter beta, gamma and new input xIN are learned via back propagation
     """
     # First we need to find the Batch mean and standard deviation column wise
-    with tf.variable_scope(scope or "batchNorm-Layer"):
-        # Initialize parameters for Batch Norm
-        beta = tf.get_variable(
-                dtype='float32',
-                shape=[numOut],
-                initializer = tf.constant_initializer(0.0),
-                name="beta",
-                trainable=True
-        )
-        gamma = tf.get_variable(
-                dtype='float32',
-                shape=[numOut],
-                initializer=tf.constant_initializer(1.0),
-                name="gamma",
-                trainable=True)
-        
-        # batchMean is an array of Hidden size with mean of each column
-        # batchVar is an array of Hidden size with variance of each column
-        batchMean, batchVar= tf.nn.moments(xIN, axes, name="moments")
-        
-        # Initialize the Moving Average model
-        ema = tf.train.ExponentialMovingAverage(decay=mAvg_decay)
-
-        # Apply the moving average only for the training Data, not for the cross validation or test data
-        def updateMeanVariance():
-            # The .apply([list]) function creates the shadow variable for all elements in the list
-            # Shadow variables for `Variable` objects are initialized to the variable's initial value.
-            maintain_averages_op = ema.apply([batchMean, batchVar])
-            # The below takes care of running all the dependency
-            with tf.control_dependencies([maintain_averages_op]):
-                return tf.identity(batchMean), tf.identity(batchVar)
-
-        
-        # The below is analogous to if else condition statement,
-        # Basically we don't want to perform the moving average for validation
-        # dataset. So we condition that if training_phase is True then we perform
-        # mean_var_with_update, Else we print ('11111111')just use the ema (estimated moving average)
-        # for both batch_mean and batch_var trained till this point
-        mean, var = tf.cond(training_phase,
-                            updateMeanVariance,
-                            lambda: (ema.average(batchMean), ema.average(batchVar)))
-        
-        # Normalize the Batch
-        bn = (xIN-mean) / tf.sqrt(var + epsilon)
-
-        
-        # Scale and shift the normalization, if required
-        bnOUT = gamma*bn + beta
-        
-        return bnOUT, batchMean, batchVar, mean, var
+    with tf.name_scope(scope):
+        with tf.variable_scope(scope):
+            # Initialize parameters for Batch Norm
+            beta = tf.get_variable(
+                    dtype='float32',
+                    shape=[numOut],
+                    initializer = tf.constant_initializer(0.0),
+                    name="beta",
+                    trainable=True
+            )
+            gamma = tf.get_variable(
+                    dtype='float32',
+                    shape=[numOut],
+                    initializer=tf.constant_initializer(1.0),
+                    name="gamma",
+                    trainable=True)
+            
+            # batchMean is an array of Hidden size with mean of each column
+            # batchVar is an array of Hidden size with variance of each column
+            batchMean, batchVar= tf.nn.moments(xIN, axes, name="moments")
+            
+            # Initialize the Moving Average model
+            ema = tf.train.ExponentialMovingAverage(decay=mAvg_decay)
+    
+            # Apply the moving average only for the training Data, not for the cross validation or test data
+            def updateMeanVariance():
+                # The .apply([list]) function creates the shadow variable for all elements in the list
+                # Shadow variables for `Variable` objects are initialized to the variable's initial value.
+                maintain_averages_op = ema.apply([batchMean, batchVar])
+                # The below takes care of running all the dependency
+                with tf.control_dependencies([maintain_averages_op]):
+                    return tf.identity(batchMean), tf.identity(batchVar)
+    
+            
+            # The below is analogous to if else condition statement,
+            # Basically we don't want to perform the moving average for validation
+            # dataset. So we condition that if training_phase is True then we perform
+            # mean_var_with_update, Else we print ('11111111')just use the ema (estimated moving average)
+            # for both batch_mean and batch_var trained till this point
+            mean, var = tf.cond(training_phase,
+                                updateMeanVariance,
+                                lambda: (ema.average(batchMean), ema.average(batchVar)))
+            
+            # Normalize the Batch
+            bn = (xIN-mean) / tf.sqrt(var + epsilon)
+    
+            
+            # Scale and shift the normalization, if required
+            bnOUT = gamma*bn + beta
+            
+            return bnOUT, batchMean, batchVar, mean, var
     
 
 def nonLinearActivation(xIN, activation='RELU', scope=None):
@@ -178,11 +188,16 @@ def nonLinearActivation(xIN, activation='RELU', scope=None):
     :param scope:       Scope name (should be same as the linearActivation scope)
     :return:            The output after applying the non linear activation
     """
-    with tf.variable_scope(scope or "nonLinear-activation"):
-        if activation=="RELU":
-            return tf.nn.relu(xIN)
-        elif activation=="LOGIT":
-            return tf.sigmoid(xIN)
+    with tf.name_scope(scope):
+        with tf.variable_scope(scope):
+            if activation=="RELU":
+                act = tf.nn.relu(xIN)
+            elif activation=="LOGIT":
+                act = tf.sigmoid(xIN)
+
+            tf.summary.histogram(activation+"_act", act)
+            
+            return act
 
 
 def poolLayer(xIN, poolShape, poolStride, padding, poolType='MAX', scope=None):
@@ -213,30 +228,35 @@ def dropout(xIN, keepProb, seed):
     return tf.nn.dropout(xIN, keepProb, seed=seed)
 
 
-def softmaxActivation(xIN, numInp, numOut, params, scope=None):
-    wMean = params['wMean']
-    wStdev = params['wStdev']
-    wSeed = params['wSeed']
-    bSeed = params['wSeed']
-    
-    with tf.variable_scope(scope or "linear-activation"):
-        w = tf.get_variable(
-                dtype='float32',
-                shape=[numInp, numOut],
-                initializer=tf.random_normal_initializer(
-                        mean=wMean, stddev=wStdev, seed=wSeed),
-                name='weight')
-        
-        b = tf.get_variable(
-                dtype='float32',
-                shape=[numOut],
-                initializer=tf.constant_initializer(1.0),
-                name='bias')
-        
-        outState = tf.matmul(xIN, w) + b
-    
-        return outState, tf.nn.softmax(outState)
+# def softmaxActivation(xIN, numInp, numOut, params, scope=None):
+#     wMean = params['wMean']
+#     wStdev = params['wStdev']
+#     wSeed = params['wSeed']
+#     bSeed = params['wSeed']
+#
+#     with tf.variable_scope(scope or "linear-activation"):
+#         w = tf.get_variable(
+#                 dtype='float32',
+#                 shape=[numInp, numOut],
+#                 initializer=tf.random_normal_initializer(
+#                         mean=wMean, stddev=wStdev, seed=wSeed),
+#                 name='weight')
+#
+#         b = tf.get_variable(
+#                 dtype='float32',
+#                 shape=[numOut],
+#                 initializer=tf.constant_initializer(1.0),
+#                 name='bias')
+#
+#         outState = tf.matmul(xIN, w) + b
+#
+#         return outState, tf.nn.softmax(outState)
 
+
+
+def softmaxActivation(outputState, scope):
+    with tf.name_scope(scope):
+        return tf.nn.softmax(outputState)
 
 
 def lossOptimization(xIN, yIN, optimizerParams, learningRateDecay = True):
@@ -250,25 +270,30 @@ def lossOptimization(xIN, yIN, optimizerParams, learningRateDecay = True):
         decayRate = optimizerParams["learningDecayRate"]
         trainSize = optimizerParams["trainSize"]
         batchSize = optimizerParams["batchSize"]
+        
         learningRate = tf.train.exponential_decay(learningRate,
                                                    globalStep * batchSize,  # Used for decay computation
                                                    trainSize,  # Decay steps
                                                    decayRate,  # Decay rate
                                                    staircase=True)  # Will decay the learning rate in discrete interval
+        tf.summary.scalar('learningRate', learningRate)
     
-    lossCE = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=xIN, labels=yIN))
-    
+    # We would like to store the summary of the loss to watch the decrease in loss.
+    with tf.name_scope("Loss"):
+        lossCE = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=xIN, labels=yIN))
+        tf.summary.scalar('loss', lossCE)
 
-    if optimizerType == 'ADAM':
-        optimizer = (tf.train.AdamOptimizer(learning_rate=learningRate)
-                     .minimize(lossCE, global_step=globalStep))
-        
-    elif optimizerType== 'RMSPROP':
-        optimizer = (tf.train.RMSPropOptimizer(learning_rate=learningRate,
-                                               momentum=momentum)
-                     .minimize(lossCE, global_step=globalStep)
-                    )
-    else:
-        raise ValueError('Your provided optimizers do not match with any of the initialized optimizers')
+    with tf.name_scope("Optimizer"):
+        if optimizerType == 'ADAM':
+            optimizer = (tf.train.AdamOptimizer(learning_rate=learningRate)
+                         .minimize(lossCE, global_step=globalStep))
+            
+        elif optimizerType== 'RMSPROP':
+            optimizer = (tf.train.RMSPropOptimizer(learning_rate=learningRate,
+                                                   momentum=momentum)
+                         .minimize(lossCE, global_step=globalStep)
+                        )
+        else:
+            raise ValueError('Your provided optimizers do not match with any of the initialized optimizers')
 
     return lossCE, optimizer, learningRate

@@ -22,7 +22,7 @@ epsilon = 1e-4
 def convGraphBuilder(xTF, convParams, poolParams, dropoutParams,
                      isTraining, layers, layerNum, axis=[0,1,2]):
    
-    scope = 'Layer%s' % str(layerNum)
+    scope = 'ConvLayer%s' % str(layerNum)
     
     individual_layer_dict = dict()
     other_vars = dict()
@@ -174,15 +174,37 @@ def nnGraphBuilder(xTF, linearParams, dropoutParams, isTraining, layers,
 
 
 
-def outputToSoftmax(xTF, numInp, numOut,
-                    layerNum):
-    outState, probLabel = \
-                softmaxActivation(xIN=xTF,
-                                 numInp=numInp,
-                                 numOut=numOut,
-                                 params=dict(
-                                         wMean=0, wStdev=0.1, wSeed=889, bSeed=716
-                                 ),
-                                 scope='Layer%s' % layerNum)
+def softmaxLayer(xTF, softmaxParams):
+    scope = "SoftmaxLayer"
+
+    outputState = \
+        linearActivation(xIN=xTF,
+                         inpOutShape=softmaxParams["shape"],
+                         wghtMean=softmaxParams["wghtMean"],
+                         wghtStddev=softmaxParams["wghtStddev"],
+                         bias=softmaxParams["bias"],
+                         seed=softmaxParams["seed"],
+                         scope=scope)
+
+    probLabel = softmaxActivation(outputState, scope)
+    # individual_layer_dict.update(
+    #
+    #         outState, probLabel = \
+    #             softmaxActivation(xIN=xTF,
+    #                              numInp=numInp,
+    #                              numOut=numOut,
+    #                              params=dict(
+    #                                      wMean=0, wStdev=0.1, wSeed=889, bSeed=716
+    #                              ),
+    #                              scope='Layer%s' % layerNum)
     
-    return outState, probLabel
+    return outputState, probLabel
+
+
+
+
+def summaryBuilder(sess, outFilePath):
+    mergedSummary = tf.summary.merge_all()
+    writer = tf.summary.FileWriter(outFilePath)
+    writer.add_graph(sess.graph)
+    return mergedSummary, writer
