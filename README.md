@@ -19,7 +19,6 @@ Below are some Feature Extraction and Modules implemented.
             --> Support Vector Machines
             --> Deep Neural Networks
             --> Convolutional Neural Networks
-            --> Convolutional Neural Networks with Inception Module
             
     3. Evaluation:
             --> Model Accuracy
