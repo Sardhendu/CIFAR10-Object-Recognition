@@ -2,24 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="63ae8c1e-15ea-4209-bb6f-d90b9d1ffcb8" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/.ipynb_checkpoints/RUN-checkpoint.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/.ipynb_checkpoints/TensorBoardOperation-checkpoint.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/.ipynb_checkpoints/TensorflowTutorial_TrainCrossValidate-checkpoint.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/.ipynb_checkpoints/TensorflowTutorial_wghtUptd-checkpoint.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/.ipynb_checkpoints/Tensorflow_LrngRateDecay-checkpoint.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/Operations/CMNFunctions.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/Operations/NetworkDebugger.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/Operations/Preprocessing.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/Operations/Tools.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/Operations/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/RUN.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/RUN.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/Rough.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/Rough2.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/DeepNets/__init__.py" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/CIFAR-10.iml" afterPath="$PROJECT_DIR$/.idea/CIFAR-10.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Models-2-Class/Vizualize.ipynb" afterPath="$PROJECT_DIR$/Models-2-Class/Vizualize.ipynb" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,56 +17,86 @@
     <fileColor scope="Project Files" color="2e2e2e" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Preprocessing.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ConvNets/Operations/Preprocessing.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#31#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CMNFunctions.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ConvNets/Operations/CMNFunctions.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3579">
-              <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#38#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Rough.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ConvNets/Rough.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="918">
-              <caret line="70" column="18" lean-forward="false" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
-              <folding>
-                <element signature="e#0#38#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GraphInterface.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ConvNets/Operations/GraphInterface.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#31#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.48420507">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file leaf-file-name="Preprocessing.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/ConvNets/Operations/Preprocessing.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="72">
+                  <caret line="4" column="9" lean-forward="false" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="9" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Rough.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/ConvNets/Rough.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="918">
+                  <caret line="70" column="18" lean-forward="false" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
+                  <folding>
+                    <element signature="e#0#38#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="GraphInterface.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/ConvNets/Operations/GraphInterface.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="0">
+                  <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#0#31#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="CMNFunctions.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/ConvNets/Operations/CMNFunctions.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="612">
+                  <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#0#38#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="InceptionBlocks.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/InceptionNets/InceptionBlocks.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="558">
+                  <caret line="31" column="25" lean-forward="false" selection-start-line="31" selection-start-column="25" selection-end-line="31" selection-end-column="25" />
+                  <folding>
+                    <element signature="e#0#31#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="LoadWeights.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/InceptionNets/LoadWeights.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="180">
+                  <caret line="10" column="88" lean-forward="true" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="88" />
+                  <folding>
+                    <element signature="e#0#31#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -111,12 +126,16 @@
         <option value="$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py" />
         <option value="$PROJECT_DIR$/DeepNets/RUN.ipynb" />
         <option value="$PROJECT_DIR$/ConvNets/Rough.py" />
+        <option value="$PROJECT_DIR$/InceptionNets/InceptionBlocks.py" />
+        <option value="$PROJECT_DIR$/InceptionNets/LoadWeights.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="width" value="1280" />
-    <option name="height" value="800" />
+    <option name="x" value="1280" />
+    <option name="y" value="-180" />
+    <option name="width" value="2560" />
+    <option name="height" value="1080" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -150,7 +169,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -161,22 +179,22 @@
             <path>
               <item name="CIFAR_10" type="b2602c69:ProjectViewProjectNode" />
               <item name="CIFAR_10" type="462c0819:PsiDirectoryNode" />
-              <item name="ConvNets" type="462c0819:PsiDirectoryNode" />
+              <item name="InceptionNets" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="CIFAR_10" type="b2602c69:ProjectViewProjectNode" />
               <item name="CIFAR_10" type="462c0819:PsiDirectoryNode" />
-              <item name="ConvNets" type="462c0819:PsiDirectoryNode" />
-              <item name="Operations" type="462c0819:PsiDirectoryNode" />
+              <item name="Models-10-Class" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -198,7 +216,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.CMNFunctions">
+  <component name="RunManager" selected="Python.LoadWeights">
     <configuration name="CIFAR-10" type="Python.Ipnb" factoryName="Jupyter Notebook">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -249,6 +267,40 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
+    <configuration name="InceptionBlocks" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/InceptionNets" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="CIFAR-10" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/InceptionNets/InceptionBlocks.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="LoadWeights" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/InceptionNets" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="CIFAR-10" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/InceptionNets/LoadWeights.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
     <configuration name="Preprocessing" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -266,17 +318,21 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <list size="4">
+    <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Jupyter Notebook.CIFAR-10" />
       <item index="1" class="java.lang.String" itemvalue="Python.GraphBuilder" />
       <item index="2" class="java.lang.String" itemvalue="Python.Preprocessing" />
       <item index="3" class="java.lang.String" itemvalue="Python.CMNFunctions" />
+      <item index="4" class="java.lang.String" itemvalue="Python.InceptionBlocks" />
+      <item index="5" class="java.lang.String" itemvalue="Python.LoadWeights" />
     </list>
     <recent_temporary>
-      <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python.CMNFunctions" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Preprocessing" />
-        <item index="2" class="java.lang.String" itemvalue="Python.GraphBuilder" />
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Python.LoadWeights" />
+        <item index="1" class="java.lang.String" itemvalue="Python.InceptionBlocks" />
+        <item index="2" class="java.lang.String" itemvalue="Python.CMNFunctions" />
+        <item index="3" class="java.lang.String" itemvalue="Python.Preprocessing" />
+        <item index="4" class="java.lang.String" itemvalue="Python.GraphBuilder" />
       </list>
     </recent_temporary>
   </component>
@@ -303,26 +359,27 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1280" height="800" extended-state="0" />
+    <frame x="1280" y="-180" width="2560" height="1080" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13327949" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.062748216" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3500404" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16679905" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19777602" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32966456" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.69498384" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -333,8 +390,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py" />
-    <entry file="file://$PROJECT_DIR$/DeepNets/Operations/CMNFunctions.py" />
     <entry file="file://$PROJECT_DIR$/DeepNets/Operations/Preprocessing.py" />
     <entry file="file://$PROJECT_DIR$/DeepNets/Operations/NetworkDebugger.py" />
     <entry file="file://$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py" />
@@ -399,16 +454,6 @@
     <entry file="file://$PROJECT_DIR$/DeepNets/Operations/Tools.py" />
     <entry file="file://$PROJECT_DIR$/DeepNets/Operations/GraphInterface.py" />
     <entry file="file://$PROJECT_DIR$/DeepNets/Operations/CMNFunctions.py" />
-    <entry file="file://$PROJECT_DIR$/ConvNets/Operations/Preprocessing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ConvNets/Rough.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="918">
@@ -436,12 +481,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ConvNets/Operations/Preprocessing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="9" lean-forward="false" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ConvNets/Operations/CMNFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3579">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+        <state relative-caret-position="612">
+          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
           <folding>
             <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/InceptionNets/InceptionBlocks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="558">
+          <caret line="31" column="25" lean-forward="false" selection-start-line="31" selection-start-column="25" selection-end-line="31" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/InceptionNets/LoadWeights.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="10" column="88" lean-forward="true" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="88" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
           </folding>
         </state>
       </provider>
