@@ -9,7 +9,7 @@ import tensorflow as tf
 
 class Preprocessing():
     '''
-        Preprocessing in images are done per image, hence it is a good idea to create a seperate computation graph
+        Preprocessing in images are done per image, hence it is a good idea to create a separate computation graph
         for Preprocessing such that the graph is iteratively fed the input image one after another pertaining to a
         batch.
     '''
