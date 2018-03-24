@@ -20,7 +20,7 @@ def convLinearActivation(xIN, convShape, stride, padding,
                          wgthMean, wghtStddev, bias, seed, scope=None):
     
     '''
-    :param xIN:             INput Data
+    :param xIN:             Input Data
     :param convShape:       [kernelY, kernelX, inpDepth, outDepth]
     :param stride:          Convolution stride
     :param padding:         padding : always "SAME"
@@ -60,7 +60,7 @@ def batchNorm(xIN, numOut,
               training_phase,
               mAvg_decay=0.5,
               epsilon=1e-4,
-              axes=[0],
+              axes=[0],  # [0,1,2] if taking a norm across
               scope=None):
     """
     :param x:           The input after linear activation
@@ -105,8 +105,8 @@ def batchNorm(xIN, numOut,
                 name="gamma",
                 trainable=True)
 
-        # batchMean is an array of Hidden size with mean of each column
-        # batchVar is an array of Hidden size with variance of each column
+        # batchMean is an array of Hidden layer size with mean of each column
+        # batchVar is an array of Hidden layer size with variance of each column
         batchMean, batchVar = tf.nn.moments(xIN, axes, name="moments")
 
         # Initialize the Moving Average model

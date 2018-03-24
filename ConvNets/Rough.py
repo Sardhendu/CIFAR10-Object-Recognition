@@ -125,13 +125,13 @@ def nonLinearActivation(xIN, activation='RELU', scope=None):
 
 
 def graphBuilder(xTF, axis, numFeatures, numHid, layerNum, isTraining=True):
-    print('1111111111 ', axis)
-    print('')
-    print('2222222222', numFeatures)
-    print('')
-    print('3333333333', numHid)
-    print('')
-    print('4444444444', layerNum)
+    # print('1111111111 ', axis)
+    # print('')
+    # print('2222222222', numFeatures)
+    # print('')
+    # print('3333333333', numHid)
+    # print('')
+    # print('4444444444', layerNum)
     # numFeatures = xTF.get_shape().as_list()[1]
     linearACTout = \
         linearActivation(xIN=xTF,
@@ -164,7 +164,7 @@ def graphBuilder(xTF, axis, numFeatures, numHid, layerNum, isTraining=True):
     #             )
 
 
-debug = True
+debug = False
 conv = False
 
 if debug:
